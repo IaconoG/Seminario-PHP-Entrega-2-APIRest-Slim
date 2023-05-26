@@ -17,7 +17,7 @@ class DB {
 
   public function __construct() {
     $this->host = 'localhost';
-    $this->dbname = 'test';  // entrega2
+    $this->dbname = 'test';  // entrega2 
     $this->username = 'root';
     $this->password = '';
 
@@ -25,10 +25,10 @@ class DB {
   }
 
   protected function connect() {
-    $srv = "mysql:host={$this->host};dbname={$this->dbname}";
+    $sqlConnect = "mysql:host={$this->host};dbname={$this->dbname}";
 
     try {
-      $this->conn = new PDO($srv, $this->username, $this->password);
+      $this->conn = new PDO($sqlConnect, $this->username, $this->password);
       $this->conn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
         // setAtribute() -> establece un atributo en el objeto PDO
         // PDO::ATTR_ERRMODE -> reporte de errores

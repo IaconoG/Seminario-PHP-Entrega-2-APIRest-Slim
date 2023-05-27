@@ -8,51 +8,124 @@ use Slim\Views\PhpRenderer;
 use App\Models\Genero;
 use App\Views\GeneroView;
 
-class GeneroController {
-  // Obtenemos los datos del nuevo genero desde el cuerpo de la solicitud
-  public function crearGenero(Request $req, Response $res, $args) {
-    $data = $req->getParsedBody();
-      // getParseBody() -> Si el método de solicitud es POST y el tipo de contenido es application/x-www-form-urlencoded o multipart/form-data, se puede recuperar todos los parámetros POS.
-
-    // Validmos los datos recibidos()
-    if(empy($data['nombre'])) {
-      // Devolvemos una respuesta de error 400 Bad Request
-      return $res->withStatus(400)->withJson([
-        'error' => 'El nombre del genero es requerido'
-      ]);
-    }
-
-    // Crear una nueva instancia del modelo Genero y asignamos los datos recibidos
-    $genero = new Genero();
-    $genero->setNombre($data['nombre']);
-
-    // Guardamos el nuevo genero en la base de datos
-    $genero->save();
-
-    // Devolvemos una respuesta de exito 200 ok, con el genero y el id del genero creado 
-    return $res->withStatus(200)->withJson([
-      'genero' => $genero,
-      'id' => $genero->getId()
-    ]);
-  }
-  // Obtenemos todos los generos de la base de datos
+class GeneroController extends Controller{
+  // Obtenemos todos los generos 
   public function listarGeneros(Request $req, Response $res, $args) {
-    $generos = Genero::all();
-
-    if (empty($generos)) {
-      // Devolvemos una respuesta de error 404 Not Found
-      $res->getBody()->write(json_encode([
-        'error' => 'No existen generos en la base de datos'
-      ]));
-
-      return $res
-        ->withHeader('Content-Type', 'application/json')
-        ->withStatus(404);
-    }
-
-    $res->getBody()->write(json_encode($generos));
-    return $res
-      ->withHeader('Content-Type', 'application/json')
-      ->withStatus(200);
+    return $this->obtenerTodos(new Genero(), 'generos', $res);
   }
+  // --- Metodo para crear un genero ---
+  public function crearGenero(Request $req, Response $res, $args) { // TODO: Para el final
+    return $this->crear(new Genero(), 'generos', $req, $res);
+  }
+  // --- Metodo para eliminar un genero --
+  public function eliminarGenero(Request $req, Response $res, $args) {
+    return $this->elimnar(new Genero(), 'generos', $args['id'], $res);
+  }
+
 }
+
+
+// Por si me dice q no akjsjas
+ // public function listarGeneros(Request $req, Response $res, $args) {
+  //   try {
+  //     $generos = Genero::obtenerTodos();
+  //       // Genero::obtenerTodos() -> devuelve un array de objetos Genero
+  //     if (empty($generos)) {
+  //       throw new TablaSinDatosException('generos');
+  //     }
+
+  //     $res->getBody()->write(json_encode([
+  //       'generos' => $generos
+  //     ]));
+  //     return $res
+  //       ->withHeader('Content-Type', 'application/json')
+  //       ->withStatus(200);
+
+  //   } catch (TablaSinDatosException $e) {
+  //     $res->getBody()->write(json_encode([
+  //       'error' => $e.getMessage()
+  //     ]));
+  //     return $res
+  //       ->withHeader('Content-Type', 'application/json')
+  //       ->withStatus(400);
+  //   } catch (\Exception $e) {
+  //     $res->getBody()->write(json_encode([
+  //       'error' => $e.getMessage()
+  //     ]));
+  //     return $res
+  //       ->withHeader('Content-Type', 'application/json')
+  //       ->withStatus(500);
+  //   }
+  // }
+  // --- Metodo para crear un genero ---
+  // public function crearGenero(Request $req, Response $res, $args) {
+  //   $datos = $req->getParsedBody();
+
+  //   try {
+  //     if (empty($datos['nombre'])) {
+  //       throw new DatoGeneroVacioException();
+  //     }
+
+  //     $genero = new Genero();
+  //     $genero->setNombre($datos['nombre']);
+
+  //     $genero->crear();
+  //     $res->getBody()->write(json_encode([
+  //       'mensaje' => 'Genero creado con exito'
+  //     ]));
+  //     return $res
+  //       ->withHeader('Content-Type', 'application/json')
+  //       ->withStatus(200);
+      
+  //   } catch (DatoGeneroVacioException $e) {
+  //     $res->getBody()->write(json_encode([
+  //       'error' => $e->getMessage()
+  //     ]));
+
+  //     return $res
+  //       ->withHeader('Content-Type', 'application/json')
+  //       ->withStatus(400);
+  //   } catch (\Exception $e) {
+  //     $res->getBody()->write(json_encode([
+  //       'error' => $e->getMessage()
+  //     ]));
+  //     return $res
+  //       ->withHeader('Content-Type', 'application/json')
+  //       ->withStatus(500);
+  //   }
+  // }
+  // // --- Metodo para eliminar un juego --
+  // public function eliminarGenero(Request $req, Response $res, $args) {
+  //   $id = $args['id'];
+
+  //   try {
+  //     $genero = new Genero();
+
+  //     if (!$genero->existeGenero($id)) {
+  //       throw new NoExisteEnTablaException('genero');
+  //     }
+
+  //     $nombreGeneroEliminado = $genero->eliminar($id);
+  //     $res->getBody()->write(json_encode([
+  //       'mensaje' => 'El genero '. $nombreGeneroEliminado .' fue eliminado con exito'
+  //     ]));
+  //     return $res
+  //       ->withHeader('Content-Type', 'application/json')
+  //       ->withStatus(200);
+
+  //   } catch (NoExisteEnTablaException $e) {
+  //     $res->getBody()->write(json_encode([
+  //       'error' => e.getMessage()
+  //     ]));
+  //     return $res
+  //       ->withHeader('Content-Type', 'application/json')
+  //       ->withStatus(400);
+  //   } catch (\Exception $e) {
+  //     $res->getBody()->write(json_encode([
+  //       'error' => $e.getMessage() 
+  //     ]));
+  //     return $res
+  //       ->withHeader('Content-Type', 'appliaction/json')
+  //       ->withStatus(500);
+  //   } 
+  // }

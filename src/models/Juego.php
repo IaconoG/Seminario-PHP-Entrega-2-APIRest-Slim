@@ -3,7 +3,7 @@ namespace App\Models;
 
 use App\Models\DB;
 
-class Juego{
+class Juego extends Model{
   private $id;
   private $nombre;
   private $imagen;
@@ -63,12 +63,20 @@ class Juego{
     $this->id_plataforma = $id_plataforma;
   }
 
-  // Metodos CRUD
+  // --- LISTAR ---
+  public function obtenerTodos() {
+    return $this->obtenerTodosDatos('juegos');
+  }
+  // --- OBTENER UNICO ---
+  public function obtenerUnico($id) {
+    return $this->obtener($id, 'juegos');
+  }
+
   // --- CREAR ---
   public function crear() {
     $db = new DB();
     $conn = $db->getConnection();
-
+  
     $sql = "INSERT INTO juegos (nombre, imagen, tipo_imagen, descripcion, url, id_genero, id_plataforma) VALUES (:nombre, :imagen, :tipo_imagen, :descripcion, :url, :id_genero, :id_plataforma)";
     $stmt = $conn->prepare($sql);
     
@@ -82,131 +90,164 @@ class Juego{
       // bindValue(':nombre', $this->nombre) -> vincula el valor de la variable $this->nombre al parametro :nombre
       // El uso de marcadores de posicion y la funcion bindValue proporciona una capa adicoinal de seguridad
       // Esto sirve para evitar la CONCATENACION directa de valores en la consutla SQL
-
+  
     $stmt->execute();
-
-    $this->id = $conn->lastInsertId();
-      // lastInsertId() -> devuelve el ID de la ultima fila o secuencia insertada
-
+  
     $db = null;  // Cierra la conexion
     $stmt = null; // Liberar recurso
   }
   // --- ELIMINAR ---
-  public function eliminar($nombre) {
-    $db = new DB();
-    $conn = $db->getConnection();
-
-    $sql = "DELETE FROM juSADASDegos WHERE nombre = :nombre";
-    $stmt = $conn->prepare($sql);
-
-    $stmt->bindValue(':nombre', $nombre); 
-
-    $stmt->execute();
-
-    $db = null;
-    $stmt = null;      
+  public function eliminarDato($id) {
+    return $this->elimnar($id, 'juegos');
   }
-  // --- ACTUALIZAR ---
-  public function actualizar($id) {
-    $db = new DB();
-    $conn = $db->getConnection();
-
-    $sql = "UPDATE juegos SET ";
-    $params = [];
-    // nombre = :nombre, imagen = :imagen, tipo_imagen = :tipo_imagen, descripcion = :descripcion, url = :url WHERE id = :id";
-
-    if ($this->nombre != null) {
-      $sql .= "nombre = :nombre, ";
-      $params[':nombre'] = $this->nombre;
-    }
-    if ($this->imagen != null) {
-        $sql .= "imagen = :imagen, ";
-        $params[':imagen'] = $this->imagen;
-    }
-    if ($this->tipo_imagen != null) {
-        $sql .= "tipo_imagen = :tipo_imagen, ";
-        $params[':tipo_imagen'] = $this->tipo_imagen;
-    }
-    if ($this->descripcion != null) {
-        $sql .= "descripcion = :descripcion, ";
-        $params[':descripcion'] = $this->descripcion;
-    }
-    if ($this->url != null) {
-        $sql .= "url = :url, ";
-        $params[':url'] = $this->url;
-    }
-
-    $sql = rtrim($sql, ', '); // Eliminar la última coma y espacio en blanco
-    $sql .= " WHERE id = :id";
-    $params[':id'] = $id;
-
-    $stmt = $conn->prepare($sql);
-
-    foreach ($params as $param => $value) {
-      $stmt->bindValue($param, $value);
-    }
-
-    // $stmt->bindValue(':id_genero', $this->id_genero); // No permite modificar
-    // $stmt->bindValue(':id_plataforma', $this->id_plataforma); // No permite modificar
-    
-    $stmt->execute();
-
-    $db = null;
-    $stmt = null;
+  // --- ACTUALIZAR --- 
+  public function actualizarDato($id) {
+    return $this->actualizar($id, 'juegos');
   }
-  // --- OBTENER ---
-  public function obtener($nombre) {
-    $db = new DB();
-    $conn = $db->getConnection();
-
-    $sql = "SELECT * FROM juegos WHERE nombre = :nombre";
-    $stmt = $conn->prepare($sql);
-
-    $stmt->bindValue(':nombre', $nombre);
-    $stmt->execute();
-
-    $juego = $stmt->fetch(\PDO::FETCH_OBJ);
-      // fetch() -> devuelve una fila de un conjunto de resultados
-      // \PDO::FETCH_OBJ -> le dice a PDO que cree una instancia de la clase stdClass y que asigne los valores de las columnas en la fila a las propiedades con el mismo nombre
-
-    $db = null;
-    $stmt = null;
-    return $juego;
+  // --- OTROS METODOS ---
+  public function existeDato($id) { 
+    return $this->existe($id, 'juegos');
   }
-
-  // Otros metodos
-  public static function obtenerTodos($tabla) {
-    $db = new DB();
-    $conn = $db->getConnection();
-    
-    $sql = "SELECT * FROM juegos";
-    $stmt = $conn->query($sql);
-
-    $juegos = $stmt->fetchAll(\PDO::FETCH_OBJ);
-      // fetchAll() -> devuelve un array que contiene todas las filas del conjunto de resultados
-      // \PDO::FETCH_CLASS -> le dice a PDO que cree una instancia de la clase especificada y que asigne los valores de las columnas en la fila a las propiedades con el mismo nombre
-      // Juego::class -> devuelve el nombre de la clase
-
-    $db = null; 
-    $stmt = null; 
-    return $juegos;
-  }
-  public function existeJuego($id) {
-    $db = new DB();
-    $conn = $db->getConnection();
-
-    $sql = "SELECT COUNT(*) FROM juegos WHERE id = :id";
-    $stmt = $conn->prepare($sql);
-    $stmt->bindValue(':id', $id);
-    $stmt->execute();
-
-    $count = $stmt->fetchColumn();
-      // fetchColumn() -> devuelve una unica columna de la siguiente fila de un conjunto de resultados
-
-    $db = null; 
-    $stmt = null; 
-
-    return $count > 0;
-  }
-
 }
+
+// // --- CREAR ---
+// public function crear() {
+//   $db = new DB();
+//   $conn = $db->getConnection();
+
+//   $sql = "INSERT INTO juegos (nombre, imagen, tipo_imagen, descripcion, url, id_genero, id_plataforma) VALUES (:nombre, :imagen, :tipo_imagen, :descripcion, :url, :id_genero, :id_plataforma)";
+//   $stmt = $conn->prepare($sql);
+  
+//   $stmt->bindValue(':nombre', $this->nombre);
+//   $stmt->bindValue(':imagen', $this->imagen);
+//   $stmt->bindValue(':tipo_imagen', $this->tipo_imagen);
+//   $stmt->bindValue(':descripcion', $this->descripcion);
+//   $stmt->bindValue(':url', $this->url);
+//   $stmt->bindValue(':id_genero', $this->id_genero);
+//   $stmt->bindValue(':id_plataforma', $this->id_plataforma);
+//     // bindValue(':nombre', $this->nombre) -> vincula el valor de la variable $this->nombre al parametro :nombre
+//     // El uso de marcadores de posicion y la funcion bindValue proporciona una capa adicoinal de seguridad
+//     // Esto sirve para evitar la CONCATENACION directa de valores en la consutla SQL
+
+//   $stmt->execute();
+
+//   $this->id = $conn->lastInsertId();
+//     // lastInsertId() -> devuelve el ID de la ultima fila o secuencia insertada
+
+//   $db = null;  // Cierra la conexion
+//   $stmt = null; // Liberar recurso
+// }
+// // --- ELIMINAR ---
+// public function eliminar($nombre) {
+//   $db = new DB();
+//   $conn = $db->getConnection();
+
+//   $sql = "DELETE FROM juegos WHERE nombre = :nombre";
+//   $stmt = $conn->prepare($sql);
+
+//   $stmt->bindValue(':nombre', $nombre); 
+
+//   $stmt->execute();
+
+//   $db = null;
+//   $stmt = null;      
+// }
+// // --- ACTUALIZAR ---
+// public function actualizar($id) {
+//   $db = new DB();
+//   $conn = $db->getConnection();
+
+//   $sql = "UPDATE juegos SET ";
+//   $params = [];
+
+//   if ($this->nombre != null) {
+//     $sql .= "nombre = :nombre, ";
+//     $params[':nombre'] = $this->nombre;
+//   }
+//   if ($this->imagen != null) {
+//       $sql .= "imagen = :imagen, ";
+//       $params[':imagen'] = $this->imagen;
+//   }
+//   if ($this->tipo_imagen != null) {
+//       $sql .= "tipo_imagen = :tipo_imagen, ";
+//       $params[':tipo_imagen'] = $this->tipo_imagen;
+//   }
+//   if ($this->descripcion != null) {
+//       $sql .= "descripcion = :descripcion, ";
+//       $params[':descripcion'] = $this->descripcion;
+//   }
+//   if ($this->url != null) {
+//       $sql .= "url = :url, ";
+//       $params[':url'] = $this->url;
+//   }
+
+//   $sql = rtrim($sql, ', '); // Eliminar la última coma y espacio en blanco
+//   $sql .= " WHERE id = :id";
+//   $params[':id'] = $id;
+
+//   $stmt = $conn->prepare($sql);
+
+//   foreach ($params as $param => $value) {
+//     $stmt->bindValue($param, $value);
+//   }
+
+//   // $stmt->bindValue(':id_genero', $this->id_genero); // No permite modificar
+//   // $stmt->bindValue(':id_plataforma', $this->id_plataforma); // No permite modificar
+  
+//   $stmt->execute();
+
+//   $db = null;
+//   $stmt = null;
+// }
+// // --- OBTENER ---
+// public function obtener($nombre) {
+//   $db = new DB();
+//   $conn = $db->getConnection();
+
+//   $sql = "SELECT * FROM juegos WHERE nombre = :nombre";
+//   $stmt = $conn->prepare($sql);
+
+//   $stmt->bindValue(':nombre', $nombre);
+//   $stmt->execute();
+
+//   $juego = $stmt->fetch(\PDO::FETCH_OBJ);
+//     // fetch() -> devuelve una fila de un conjunto de resultados
+//     // \PDO::FETCH_OBJ -> le dice a PDO que cree una instancia de la clase stdClass y que asigne los valores de las columnas en la fila a las propiedades con el mismo nombre
+
+//   $db = null;
+//   $stmt = null;
+//   return $juego;
+// }
+
+// // Otros metodos
+// public static function obtenerTodos($tabla) {
+//   $db = new DB();
+//   $conn = $db->getConnection();
+  
+//   $sql = "SELECT * FROM juegos";
+//   $stmt = $conn->query($sql);
+
+//   $juegos = $stmt->fetchAll(\PDO::FETCH_OBJ);
+//     // fetchAll() -> devuelve un array que contiene todas las filas del conjunto de resultados
+//     // \PDO::FETCH_OBJ -> le dice a PDO que cree una instancia de la clase stdClass y que asigne los valores de las columnas en la fila a las propiedades con el mismo nombr
+//   $db = null; 
+//   $stmt = null; 
+//   return $juegos;
+// }
+// public function existeJuego($id) {
+//   $db = new DB();
+//   $conn = $db->getConnection();
+
+//   $sql = "SELECT COUNT(*) FROM juegos WHERE id = :id";
+//   $stmt = $conn->prepare($sql);
+//   $stmt->bindValue(':id', $id);
+//   $stmt->execute();
+
+//   $cont = $stmt->fetchColumn();
+//     // fetchColumn() -> devuelve una unica columna de la siguiente fila de un conjunto de resultados
+
+//   $db = null; 
+//   $stmt = null; 
+
+//   return $cont > 0;
+// }

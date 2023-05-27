@@ -19,20 +19,27 @@ $app->get('/', function (Request $req, Response $res, array $args) {
 use App\Controllers\GeneroController;
 
 // Ruta para mostrar todos los generos
-$app->get('/generos', GeneroController::class . ':listarGeneros');
+$app->get('/generos/todos', GeneroController::class . ':listarGeneros');
+// Ruta para crear un nuevo genero
+$app->post('/generos/crear', GeneroController::class . ':crearGenero');
+// Ruta para eliminar un genero
+$app->delete('/generos/eliminar/{id}', GeneroController::class . ':eliminarGenero');
+// Ruta para actualizar un genero
+
+// Ruta para obtener un genero
 
 
 use App\Controllers\JuegoController;
 // Ruta para mostrar todos los juegos
 $app->get('/juegos/todos', JuegoController::class . ':listarJuegos');
 // Ruta para crear un nuevo genero
-$app->post('/juegos/crear', JuegoController::class . ':crearJuego');
+$app->post('/juegos/crear', JuegoController::class . ':crear');
 // Ruta para eliminar un genero
-$app->delete('/juegos/eliminar/{nombre}', JuegoController::class . ':eliminarJuego');
+$app->delete('/juegos/eliminar/{id}', JuegoController::class . ':eliminarJuego');
 // Ruta para actualizar un genero
 $app->post('/juegos/actualizar/{id}', JuegoController::class . ':actualizarJuego'); // convertido en PATCH por el formulario
 // Ruta para obtener un genero
-$app->get('/juegos/obtener/{nombre}', JuegoController::class . ':obtenerJuego');
+$app->get('/juegos/obtener/{id}', JuegoController::class . ':obtenerJuego');
 
 
 
@@ -41,3 +48,4 @@ $app->get('/juegos/obtener/{nombre}', JuegoController::class . ':obtenerJuego');
 $app->run();     
 
 
+//TODO: Al momento de buscar un dato en la tabla importa la mayuscula y minuscula, resolver

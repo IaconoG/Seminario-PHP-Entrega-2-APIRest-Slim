@@ -1,3 +1,8 @@
+# LA CARGA DE LA IMAGEN BASE64 TIENE UN substr DE 5 CHAR, PORQUE NI GANAS DE TENER TODO ESE TEXTO
+# IGUAL EN LA ENTREGA ELIMNARLO
+
+# LA CARGA DE IMAGEN NO EJECUTA EL INSERT PORQUE ESTA COMENTADO, ESTO PORQUE QUIERO VER LOS DATOS ANTES DE REALIZAR EL INSERT.
+
 ctrl + shift + f
 
 AppFactory.php -> vamos a poder ver la calse de AppFactory con sus metodos etc.
@@ -5,11 +10,6 @@ AppFactory.php -> vamos a poder ver la calse de AppFactory con sus metodos etc.
 composer update -> actualiza las dependencias
 
 composer dump-autoload -> actualiza el autoload
-
-
-https://www.youtube.com/watch?v=kPiOzX3uKeY
-
-video 4
 
 php -S localhost:8000 -> ejecutamos slim
 
@@ -24,8 +24,7 @@ localhost:8000 -> nos muestra el index.php
 https://stackoverflow.com/questions/57558242/slim-exception-httpnotfoundexception
 
 
-post -> body -> raw
-
+post -> body -> raw -> json
 {
     "nombre": "Counter Strike Global Offensive",
     "imagen": "lKNKJSBkJL",
@@ -35,19 +34,12 @@ post -> body -> raw
     "setIdGenero": "1",
     "setIdPlataforma": "1",
 }
-
-
 El pasaje de datos por post deber ser por json?
 
-# LA CARGA DE LA IMAGEN BASE64 TIENE UN substr DE 5 CHAR, PORQUE NI GANAS DE TENER TODO ESE TEXTO
-# IGUAL EN LA ENTREGA ELIMNARLO
-
-# LA CARGA DE IMAGEN NO EJECUTA EL INSERT PORQUE ESTA COMENTADO, ESTO PORQUE QUIERO VER LOS DATOS ANTES DE REALIZAR EL INSERT.
 
 
 // Detalles sonbre mvc
 https://es.stackoverflow.com/questions/61436/duda-sobre-excepciones-en-patron-mvc-propio
-
 
 
 ---------------------------
@@ -58,18 +50,16 @@ listar - si
 mostrar uno - si
 eliminar - si
 modificar - si
-agregar - si
-
+agregar - si (falta el try-catch)
 ---------------------------
 GENERO
 
-listar - no
+listar - si
 
 mostrar uno - no
-eliminar - no
+eliminar - casi (ver lo q no permite eliminar generos vinculados)
 modificar - no
-agregar - no
-
+agregar - casi
 ---------------------------
 PLATAFORMA
 
@@ -89,7 +79,6 @@ Preguntas
  - Al momento de actualizar la informacion no me permite modificar el id_genero y id_plataforma, 
     - {"error":"SQLSTATE[23000]: Integrity constraint violation: 1452 Cannot add or update a child row: a foreign key constraint fails (`test`.`juegos`, CONSTRAINT `fk_genero` FOREIGN KEY (`id_genero`) REFERENCES `generos` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION)"}
 
-- 
 
 
 - Informacion importante

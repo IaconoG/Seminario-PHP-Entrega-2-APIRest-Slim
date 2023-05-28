@@ -40,12 +40,21 @@ $app->post('/juegos/actualizar/{id}', JuegoController::class . ':actualizarJuego
 // Ruta para obtener un genero
 $app->get('/juegos/obtener/{id}', JuegoController::class . ':obtenerJuego');
 
-
-
+use App\Controllers\PlataformaController;
+// Ruta para mostrar todos los juegos
+$app->get('/plataformas/todos', PlataformaController::class . ':listarPlataformas');
+// Ruta para crear un nuevo genero
+$app->post('/plataformas/crear', PlataformaController::class . ':crearPlataforma');
+// Ruta para eliminar un genero
+$app->delete('/plataformas/eliminar/{id}', PlataformaController::class . ':eliminarPlataforma');
+// Ruta para actualizar un genero
+$app->post('/plataformas/actualizar/{id}', PlataformaController::class . ':actualizarPlataforma'); // convertido en PATCH por el formulario
+// Ruta para obtener un genero
+$app->get('/plataformas/obtener/{id}', PlataformaController::class . ':obtenerPlataforma');
 
 
 
 $app->run();     
 
 
-//TODO: Al momento de buscar un dato en la tabla importa la mayuscula y minuscula, resolver
+//TODO: Al momento de buscar un dato en la tabla importa la mayuscula y minuscula!, resolver

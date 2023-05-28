@@ -7,7 +7,7 @@ use Exception;
 class ErrorEnvioFormularioException extends Exception {
   protected $message;
 
-  public function __construct($errores) {
+  public function __construct() {
     $this->message = 'El formulario no esta enviado parametros (keys)';
   
   }

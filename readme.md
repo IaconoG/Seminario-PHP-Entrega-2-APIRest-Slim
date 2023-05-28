@@ -1,7 +1,6 @@
-# LA CARGA DE LA IMAGEN BASE64 TIENE UN substr DE 5 CHAR, PORQUE NI GANAS DE TENER TODO ESE TEXTO
-# IGUAL EN LA ENTREGA ELIMNARLO
+# LA CARGA DE LA IMAGEN BASE64 TIENE UN substr DE 5 CHAR, PORQUE NI GANAS DE TENER TODO ESE TEXTO (PARA LA ENTREGA ELIMINARLO)
 
-# LA CARGA DE IMAGEN NO EJECUTA EL INSERT PORQUE ESTA COMENTADO, ESTO PORQUE QUIERO VER LOS DATOS ANTES DE REALIZAR EL INSERT.
+# LA CARGA DE JUEGO NO EJECUTA EL INSERT PORQUE ESTA COMENTADO, ESTO PORQUE QUIERO VER LOS DATOS ANTES DE REALIZAR EL INSERT.
 
 ctrl + shift + f
 
@@ -42,33 +41,39 @@ El pasaje de datos por post deber ser por json?
 https://es.stackoverflow.com/questions/61436/duda-sobre-excepciones-en-patron-mvc-propio
 
 
+# TODO
+ - Falta probar todos los metodos de todos los controladores
+ - Falta realizar los views (si es que es necesario)
+ - Falta cargar todos los datos de la entrega 1 (si es que es necesario)
+ - 
+
 ---------------------------
 JUEGOS
 
-listar - si
+listar - probar
 
-mostrar uno - si
-eliminar - si
-modificar - si
-agregar - si (falta el try-catch)
+mostrar uno - probar
+eliminar - probar
+modificar - probar
+agregar - probar
 ---------------------------
 GENERO
 
-listar - si
+listar - probar
 
-mostrar uno - no
-eliminar - casi (ver lo q no permite eliminar generos vinculados)
-modificar - no
-agregar - casi
+mostrar uno - probar
+eliminar - probar (ver lo q no permite eliminar generos vinculados)
+modificar - probar
+agregar - probar
 ---------------------------
 PLATAFORMA
 
-listar - no
+listar - probar
 
-mostrar uno - no
-eliminar - no
-modificar - no
-agregar - no
+mostrar uno - probar
+eliminar - probar (ver lo q no permite eliminar generos vinculados)
+modificar - probar
+agregar - probar
 
 
 Preguntas

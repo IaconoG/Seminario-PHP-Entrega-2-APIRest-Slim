@@ -9,20 +9,30 @@ use App\Models\Genero;
 use App\Views\GeneroView;
 
 class GeneroController extends Controller{
-  // Obtenemos todos los generos 
+  // --- METODO PARA MOSTRAR TODOS LOS GENEROS ---
   public function listarGeneros(Request $req, Response $res, $args) {
     return $this->obtenerTodos(new Genero(), 'generos', $res);
   }
-  // --- Metodo para crear un genero ---
-  public function crearGenero(Request $req, Response $res, $args) { // TODO: Para el final
-    return $this->crear(new Genero(), 'generos', $req, $res);
+  // --- METODO PARA OBTENER UN UNICO GENEROS ---
+  public function obtenerGeneros(Request $req, Response $res, $args) {
+    return $this->obtenerUnico(new Genero(), 'generos', $args['id'], $res);
   }
-  // --- Metodo para eliminar un genero --
-  public function eliminarGenero(Request $req, Response $res, $args) {
+  // --- METODO PARA CREAR UN GENEROS ---
+  public function crearGenero(Request $req, Response $res, $args) { 
+    return $this->crear(new Genero(), 'generos', $req->getParsedBody(), $req->getUploadedFiles(), $res);
+  }
+  // --- METODO PARA ELIMINAR UN GENEROS ---
+  public function eliminarGeneros(Request $req, Response $res, $args) {
     return $this->elimnar(new Genero(), 'generos', $args['id'], $res);
   }
-
+  // --- METODO PARA ACTUALIZAR UN GENEROS ---
+  public function actualizarGeneros(Request $req, Response $res, $args) {
+    return $this->actualizar(new Genero(), 'generos', $args['id'], $req->getParsedBody(), $req->getUploadedFiles(), $res);
+  }
 }
+
+
+
 
 
 // Por si me dice q no akjsjas

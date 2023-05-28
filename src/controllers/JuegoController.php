@@ -18,73 +18,8 @@ class JuegoController extends Controller{
     return $this->obtenerUnico(new Juego(), 'juegos', $args['id'], $res);
   }
   // --- METODO PARA CREAR UN JUEGO ---
-  public function crear(Request $req, Response $res, $args) { 
-    $data = $req->getParsedBody();
-      // getParseBody() -> devuelve un array asociativo con los datos del body
-    $files = $req->getUploadedFiles();
-      // getUploadedFiles() -> devuelve un array asociativo con los archivos subidos
-    $errores = [];
-
-    // Validacions de los datos 
-    $this->validarDatos($data, $files, $errores);
-
-    try {
-      if (!empty($errores)) {
-        throw new CamposVaciosException('juegos');
-      }
-      // Asignamos los valores
-      $juego = new Juego(); 
-      $juego->setNombre($data['nombre']);
-      $juego->setTipoImagen($files['imagen']->getClientMediaType());
-      $juego->setImagen(substr(base64_encode(
-          file_get_contents(
-            $files['imagen']
-              ->getStream()
-              ->getMetadata('uri')
-            )
-          ),0,5)); // FIXME: el substr esta porque no tengo ganas de envioar todo el choclo ese :D (eliminar) 
-        // getStream() -> devuelve un flujo de datos (stream) que representa el contenido del archivo cargado
-        // getMetadata('uri') -> devuelve la ubicacion del archivo temporal
-        // getClientMediaType() -> devuelve el tipo de media del archivo
-      $juego->setDescripcion($data['descripcion']);
-      $juego->setUrl($data['url']);
-      $juego->setIdGenero($data['idGenero']);
-      $juego->setIdPlataforma($data['idPlataforma']);
-
-      $res->getBody()->write(json_encode([
-        'errores' => $errores,
-        'nombre' => $juego->getNombre(),
-        'imagen' => substr($juego->getImagen(), 0, 5),
-        'tipo_imagen' => $juego->getTipoImagen(),
-        'descripcion' => $juego->getDescripcion(),
-        'url' => $juego->getUrl(),
-        'id_genero' => $juego->getIdGenero()
-      ]));
-
-      // $juego->crear();
-      // $res->getBody()->write(json_encode([
-      //   'mensaje' => 'Juego creado con exito'
-      // ]));
-      return $res
-        ->withHeader('Content-Type', 'application/json') 
-        ->withStatus(200);
-
-    } catch (CamposVaciosException $e) {
-      $res->getBody()->write(json_encode([
-        'error' => 'Posee errores en los campos:',
-        'errores' => $errores
-      ]));
-      return $res
-        ->withHeader('Content-Type', 'application/json')
-        ->withStatus(400); // Bad Request -> faltan datos
-    } catch (\Exception $e) {
-      $res->getBody()->write(json_encode([
-        'error' => $e->getMessage()
-      ]));
-      return $res
-        ->withHeader('Content-Type', 'application/json')
-        ->withStatus(500); 
-    }
+  public function crearJuego(Request $req, Response $res, $args) { 
+    return $this->crear(new Juego(), 'juegos', $req->getParsedBody(), $req->getUploadedFiles(), $res);
   }
   // --- METODO PARA ELIMINAR UN JUEGO ---
   public function eliminarJuego(Request $req, Response $res, $args) {
@@ -94,39 +29,6 @@ class JuegoController extends Controller{
   public function actualizarJuego(Request $req, Response $res, $args) {
     return $this->actualizar(new Juego(), 'juegos', $args['id'], $req->getParsedBody(), $req->getUploadedFiles(), $res);
   }
-  
-  // --- Metodos Extas ---
-  private function validarDatos($datos, $files, $errores) {
-      // Validamos el nombre
-      if (empty($data['nombre'])) {
-        $errores['nombre'] = 'El nombre es obligatorio';
-      } 
-        // Validamos la imagen
-      if (empty($files['imagen'])) {
-        $errores['imagen'] = 'La imagen es obligatoria';
-      } else {
-        if ($files['imagen']->getError() !== UPLOAD_ERR_OK) {
-          $errores['imagen'] = 'Hubo un error al subir la imagen '. $files['imagen']->getError();  
-        }    
-      }
-        // Validamos la descripcion
-      if (empty($data['descripcion'])) {
-        $errores['descripcion'] = 'La descripcion es obligatoria';
-      }
-        // Validamos la url
-      if (empty($data['url'])) {
-        $errores['url'] = 'La url es obligatoria';
-      }
-        // Validamos el genero
-      if (empty($data['id_genero'])) {
-        $errores['id_genero'] = 'El genero es obligatorio';
-      }
-        // Validamos la plataforma
-      if (empty($data['id_plataforma'])) {
-        $errores['id_plataforma'] = 'La plataforma es obligatorio';
-      }
-  }
-
 }
 
 // class JuegoController {

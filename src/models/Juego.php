@@ -73,28 +73,8 @@ class Juego extends Model{
   }
 
   // --- CREAR ---
-  public function crear() {
-    $db = new DB();
-    $conn = $db->getConnection();
-  
-    $sql = "INSERT INTO juegos (nombre, imagen, tipo_imagen, descripcion, url, id_genero, id_plataforma) VALUES (:nombre, :imagen, :tipo_imagen, :descripcion, :url, :id_genero, :id_plataforma)";
-    $stmt = $conn->prepare($sql);
-    
-    $stmt->bindValue(':nombre', $this->nombre);
-    $stmt->bindValue(':imagen', $this->imagen);
-    $stmt->bindValue(':tipo_imagen', $this->tipo_imagen);
-    $stmt->bindValue(':descripcion', $this->descripcion);
-    $stmt->bindValue(':url', $this->url);
-    $stmt->bindValue(':id_genero', $this->id_genero);
-    $stmt->bindValue(':id_plataforma', $this->id_plataforma);
-      // bindValue(':nombre', $this->nombre) -> vincula el valor de la variable $this->nombre al parametro :nombre
-      // El uso de marcadores de posicion y la funcion bindValue proporciona una capa adicoinal de seguridad
-      // Esto sirve para evitar la CONCATENACION directa de valores en la consutla SQL
-  
-    $stmt->execute();
-  
-    $db = null;  // Cierra la conexion
-    $stmt = null; // Liberar recurso
+  public function crearDato() { 
+    return $this->crear('juegos');
   }
   // --- ELIMINAR ---
   public function eliminarDato($id) {

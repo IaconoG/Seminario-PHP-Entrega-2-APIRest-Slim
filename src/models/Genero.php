@@ -21,19 +21,27 @@ class Genero extends Model{
     $this->nombre = $nombre;
   }
 
+  // --- LISTAR ---
+  public function obtenerTodos() {
+    return $this->obtenerTodosDatos('generos');
+  }
+  // --- OBTENER UNICO ---
+  public function obtenerUnico($id) {
+    return $this->obtener($id, 'generos');
+  }
   // --- CREAR ---
-  // public function crear() { // TODO: a lo ultimo    
-  // }
+  public function crearDato() { 
+    return $this->crear('generos');
+  }
   // --- ELIMINAR ---
   public function eliminarDato($id) {
     return $this->elimnar($id, 'generos');
   }
-  
-  // --- OTROS METODOS ---
-  // Obtenemos todos los generos de la base de datos
-  public function obtenerTodos() {
-    return $this->obtenerTodosDatos('generos');
+  // --- ACTUALIZAR --- 
+  public function actualizarDato($id) {
+    return $this->actualizar($id, 'generos');
   }
+  // --- OTROS METODOS ---
   public function existeDato($id) { 
     return $this->existe($id, 'generos');
   }

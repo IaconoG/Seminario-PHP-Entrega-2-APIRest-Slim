@@ -3,8 +3,56 @@ namespace App\Models;
 
 use App\Models\DB;
 
-abstract class Model{
-  abstract protected function crear();
+class Model{
+  protected function crear($tabla) {
+    $db = new DB();
+    $conn = $db->getConnection();
+
+    // $sql = "INSERT INTO $tabla (nombre, imagen, tipo_imagen, descripcion, url, id_genero, id_plataforma) VALUES (:nombre, :imagen, :tipo_imagen, :descripcion, :url, :id_genero, :id_plataforma)";
+    $sql = "INSERT INTO $tabla (";
+    $parametros = [];
+    if ($this->getNombre() != null) {
+      $sql .= "nombre, ";
+      $parametros[':nombre'] = $this->getNombre();
+    }
+    if ($tabla == 'juegos') {
+      if ($this->getImagen() != null) {
+          $sql .= "imagen, ";
+          $parametros[':imagen'] = $this->getImagen();
+      }
+      if ($this->getTipoImagen() != null) {
+          $sql .= "tipo_imagen, ";
+          $parametros[':tipo_imagen'] = $this->getTipoImagen();
+      }
+      if ($this->getDescripcion() != null) {
+          $sql .= "descripcion, ";
+          $parametros[':descripcion'] = $this->getDescripcion();
+      }
+      if ($this->getUrl() != null) {
+          $sql .= "url, ";
+          $parametros[':url'] = $this->getUrl();
+      }
+    }
+    $sql = rtrim($sql, ', '); 
+    $sql .= ") VALUES (";
+
+    foreach ($parametros as $param => $value) {
+      $sql .= ":$param, ";
+    }
+    
+    $sql = rtrim($sql, ', ');
+    $sql .= ")";
+
+    $stmt = $conn->prepare($sql);
+    foreach ($parametros as $param => $value) {
+      $stmt->bindValue($param, $value);
+    }
+
+    $stmt->execute();
+
+    $db = null;
+    $stmt = null;
+  }
   protected function obtener($id, $tabla) {
     $db = new DB();
     $conn = $db->getConnection();
@@ -28,39 +76,39 @@ abstract class Model{
     $conn = $db->getConnection();
 
     $sql = "UPDATE $tabla SET ";
-    $params = [];
+    $parametros = [];
 
     if ($this->getNombre() != null) {
       $sql .= "nombre = :nombre, ";
-      $params[':nombre'] = $this->getNombre();
+      $parametros[':nombre'] = $this->getNombre();
     }
     if ($tabla == 'juegos') {
       if ($this->getImagen() != null) {
           $sql .= "imagen = :imagen, ";
-          $params[':imagen'] = $this->getImagen();
+          $parametros[':imagen'] = $this->getImagen();
       }
       if ($this->getTipoImagen() != null) {
           $sql .= "tipo_imagen = :tipo_imagen, ";
-          $params[':tipo_imagen'] = $this->getTipoImagen();
+          $parametros[':tipo_imagen'] = $this->getTipoImagen();
       }
       if ($this->getDescripcion() != null) {
           $sql .= "descripcion = :descripcion, ";
-          $params[':descripcion'] = $this->getDescripcion();
+          $parametros[':descripcion'] = $this->getDescripcion();
       }
       if ($this->getUrl() != null) {
           $sql .= "url = :url, ";
-          $params[':url'] = $this->getUrl();
+          $parametros[':url'] = $this->getUrl();
       }
     }
 
-    $sql = rtrim($sql, ', '); // Eliminar la última coma y espacio en blanco
-      // rtrim -> 
+    $sql = rtrim($sql, ', '); 
+      // rtrim -> Eliminar la última coma y espacio en blanco
     $sql .= " WHERE id = :id";
-    $params[':id'] = $id;
+    $parametros[':id'] = $id;
 
     $stmt = $conn->prepare($sql);
 
-    foreach ($params as $param => $value) {
+    foreach ($parametros as $param => $value) {
       $stmt->bindValue($param, $value);
     }
 
@@ -95,7 +143,7 @@ abstract class Model{
 
     return $nombre;
   }
-  //---
+  // ---
   public function obtenerTodosDatos($tabla) {
     $db = new DB();
     $conn = $db->getConnection();
@@ -108,6 +156,8 @@ abstract class Model{
     $stmt = null; 
     return $datos;
   }
+
+  // OTROS METODOS
   public function existe($id, $tabla) { 
     $db = new DB();
     $conn = $db->getConnection();

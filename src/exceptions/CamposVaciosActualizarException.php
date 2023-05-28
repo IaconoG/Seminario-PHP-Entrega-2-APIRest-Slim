@@ -4,7 +4,7 @@ namespace App\Exceptions;
 
 use Exception;
 
-class CamposVaciosException extends Exception {
+class CamposVaciosActualizarException extends Exception {
     protected $message;
 
     public function __construct($tabla) {

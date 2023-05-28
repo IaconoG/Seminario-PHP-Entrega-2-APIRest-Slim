@@ -46,12 +46,11 @@ class Controller {
   protected function crear($model, $tabla, $datos, $files, $res) { 
     try {
       // Validacions de los datos 
-      if ($datos == null || $files == null) {
+      if ($datos == null && $files == null) {
         throw new ErrorEnvioFormularioException();
       }
 
       $errores = $this->validarDatos($datos, $files, $res);
-      
       if (!empty($errores)) {
         throw new CamposVaciosCrearException($errores);
       }
@@ -78,7 +77,7 @@ class Controller {
           // getClientMediaType() -> devuelve el tipo de media del archivo
       }
       
-      // $model->crear(); // FIXME: Eliminar comentarios
+      // $model->crearDato(); // FIXME: Eliminar comentarios
       $res->getBody()->write(json_encode([
         'mensaje' => 'Juego creado con exito'
       ]));
@@ -143,11 +142,9 @@ class Controller {
       if (!$model->existeDato($id)) {
         throw new NoExisteEnTablaException;
       }
-
-      if ($datos == null || $files == null) {
+      if ($datos == null && $files == null) {
         throw new ErrorEnvioFormularioException();
       }
-
       if (empty($datos) && empty($files)) {
         throw new CamposVaciosActualizarException($tabla);
       }

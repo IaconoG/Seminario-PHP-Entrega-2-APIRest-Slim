@@ -4,6 +4,11 @@ namespace App\Models;
 use App\Models\DB;
 
 class Model{
+
+  public function __constructor() {
+    // constructor
+  }
+
   protected function crear($tabla) {
     $db = new DB();
     $conn = $db->getConnection();
@@ -32,17 +37,23 @@ class Model{
           $sql .= "url, ";
           $parametros[':url'] = $this->getUrl();
       }
+      if ($this->getIdGenero() != null) {
+        $sql .= "id_genero, ";
+        $parametros[':id_genero'] = $this->getIdGenero();
+      }
+      if ($this->getIdPlataforma() != null) {
+        $sql .= "id_plataforma, ";
+        $parametros[':id_plataforma'] = $this->getIdPlataforma();
+      }
     }
     $sql = rtrim($sql, ', '); 
     $sql .= ") VALUES (";
 
     foreach ($parametros as $param => $value) {
-      $sql .= ":$param, ";
+      $sql .= "$param, ";
     }
-    
     $sql = rtrim($sql, ', ');
     $sql .= ")";
-
     $stmt = $conn->prepare($sql);
     foreach ($parametros as $param => $value) {
       $stmt->bindValue($param, $value);
@@ -63,13 +74,13 @@ class Model{
     $stmt->bindValue(':id', $id);
     $stmt->execute();
 
-    $juego = $stmt->fetch(\PDO::FETCH_OBJ);
+    $dato = $stmt->fetch(\PDO::FETCH_OBJ);
       // fetch() -> devuelve una fila de un conjunto de resultados
       // \PDO::FETCH_OBJ -> le dice a PDO que cree una instancia de la clase stdClass y que asigne los valores de las columnas en la fila a las propiedades con el mismo nombre
 
     $db = null;
     $stmt = null;
-    return $juego;  
+    return $dato;  
   }
   protected function actualizar($id, $tabla) {
     $db = new DB();
@@ -99,6 +110,14 @@ class Model{
           $sql .= "url = :url, ";
           $parametros[':url'] = $this->getUrl();
       }
+      if ($this->getIdGenero() != null) {
+        $sql .= "id_genero, ";
+        $parametros[':id_genero'] = $this->getIdGenero();
+      }
+      if ($this->getIdPlataforma() != null) {
+        $sql .= "id_plataforma, ";
+        $parametros[':id_plataforma'] = $this->getIdPlataforma();
+      }
     }
 
     $sql = rtrim($sql, ', '); 
@@ -119,6 +138,7 @@ class Model{
 
     $db = null;
     $stmt = null;
+    return $this->obtener($id, $tabla); // Esto porque quiero el nombre del dato modificado
   }
   protected function elimnar($id, $tabla) {
     $db = new DB();

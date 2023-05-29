@@ -56,28 +56,32 @@ class Controller {
       }
 
       // Asignamos los datos al objeto
+      /*
+        - Asignamos los datos del formulario a las propiedades del objeto
+        - Contruyendo el nombre del metodo setter de cada propiedad
+        - Si el objeto tiene un metodo con ese nombre, se llama al metodo con el valor del elemento correspondiente en el array $datos como argumento
+      */
       $metodos = '';
       foreach($datos as $atributo => $valor) {
         $metodos = 'set' . ucfirst($atributo);
-        if (property_exists($model, $metodos)) {
+        if (method_exists($model, $metodos)) {
           $model->$metodos($valor);
         }
       }
       if (!empty($files)) {
         $model->setTipoImagen($files['imagen']->getClientMediaType());
         $model->setImagen(substr(base64_encode(
-            file_get_contents(
-              $files['imagen']
-                ->getStream()
-                ->getMetadata('uri')
-              )
-            ),0,5)); // FIXME: el substr esta porque no tengo ganas de envioar todo el choclo ese :D (eliminar) 
-          // getStream() -> devuelve un flujo de datos (stream) que representa el contenido del archivo cargado
-          // getMetadata('uri') -> devuelve la ubicacion del archivo temporal
-          // getClientMediaType() -> devuelve el tipo de media del archivo
+          file_get_contents(
+            $files['imagen']
+              ->getStream()
+              ->getMetadata('uri')
+            )
+          ),0,5)); // FIXME: el substr esta porque no tengo ganas de envioar todo el choclo ese :D (eliminar) 
+        // getStream() -> devuelve un flujo de datos (stream) que representa el contenido del archivo cargado
+        // getMetadata('uri') -> devuelve la ubicacion del archivo temporal
+        // getClientMediaType() -> devuelve el tipo de media del archivo
       }
-      
-      // $model->crearDato(); // FIXME: Eliminar comentarios
+      $sql = $model->crearDato(); // FIXME: Eliminar comentarios
       $res->getBody()->write(json_encode([
         'mensaje' => 'Juego creado con exito'
       ]));
@@ -139,25 +143,50 @@ class Controller {
   }
   protected function actualizar($model, $tabla, $id, $datos, $files, $res) {
     try {
-      if (!$model->existeDato($id)) {
-        throw new NoExisteEnTablaException;
-      }
-      if ($datos == null && $files == null) {
+      unset($datos['_method']); // Ya no necesitamos este dato
+      /*
+        Si no se envia nada en el formulario
+        Si el formulario no envia nada, pero envia el _method que es solo para que el post se comporte como un patch 
+        count($datos) -> devuelve la cantidad de elementos de un array
+      */
+      if (($datos == null && $files == null)) {
         throw new ErrorEnvioFormularioException();
       }
-      if (empty($datos) && empty($files)) {
+      if (!$model->existeDato($id)) {
+        throw new NoExisteEnTablaException($tabla);
+      }
+      // Validacions de los datos
+      $allCamposVacios = true;
+      foreach($datos as $dato) {
+        if (!empty($dato)) {
+          $allCamposVacios = false;
+          break;
+        }
+      }
+      if ($allCamposVacios) {
+        if (!empty($files['imagen']->getClientFilename())) {
+          $allCamposVacios = false;
+        }
+      }
+      if ($allCamposVacios) {
         throw new CamposVaciosActualizarException($tabla);
       }
-
       // Asignamos los datos al objeto 
+      /*
+        - Asignamos los datos del formulario a las propiedades del objeto siempre y cuand el campo no este vacio
+        - Contruyendo el nombre del metodo setter de cada propiedad
+        - Si el objeto posee un metodo con ese nombre, se llama al metodo con el valor del elemento correspondiente en el array $datos como argumento
+      */
       $metodos = '';
       foreach($datos as $atributo => $valor){
-        $metodos = 'set' . ucfirst($atributo);
-          // ucfirst() -> convierte el primer caracter de la cadena en mayuscula
-        if (!empty($valor) && property_exists($model, $atributo)) {
-          $model->$metodos($valor);
-            // set{$atributo}() -> "anida el valor de la variable $atributo dentro del nombre del metodo set"
+        if (!empty($valor)) {
+          $metodos = 'set' . ucfirst($atributo);
+             // ucfirst() -> convierte el primer caracter de la cadena en mayuscula
+             // set{$atributo}() -> "anida el valor de la variable $atributo dentro del nombre del metodo set"
+          if (method_exists($model, $metodos)) {
+            $model->$metodos($valor);
             // ej. estariamo llamando al metodo setNombre()
+          }
         }
       }
       if (!empty($files)) {
@@ -172,12 +201,10 @@ class Controller {
       }
 
       // Actualizamos el dato
-      $model->actualizarDato($id);
-      $nombreDatoActualizado = $model->getNombre();
+      $datoActualizado = $model->actualizarDato($id);
       
-
       $res->getBody()->write(json_encode([
-        'mensaje' => 'El dato '. $nombreDatoActualizado .' fue actualizado con exito'
+        'mensaje' => 'El dato ' . $datoActualizado->nombre .' fue actualizado con exito'
       ]));
       return $res
         ->withHeader('Content-Type', 'application/json')
@@ -227,13 +254,6 @@ class Controller {
         ->withHeader('Content-Type', 'application/json')
         ->withStatus(200);
 
-    } catch (TablaSinDatosException $e) {
-      $res->getBody()->write(json_encode([
-        'error' => $e->getMessage()
-      ]));
-      return $res
-        ->withHeader('Content-Type', 'application/json')
-        ->withStatus(400);
     } catch (\Exception $e) {
       $res->getBody()->write(json_encode([
         'error' => $e->getMessage()

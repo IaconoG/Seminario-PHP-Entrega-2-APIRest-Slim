@@ -13,6 +13,10 @@ class Juego extends Model{
   private $id_genero;
   private $id_plataforma;
 
+  public function __constructor() {
+    parent::__constructor(); //llama al constructor de la clase padre
+  }
+
   // getters y setters
   public function getId(){
     return $this->id;

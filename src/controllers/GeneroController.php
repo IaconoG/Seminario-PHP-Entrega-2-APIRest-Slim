@@ -14,7 +14,7 @@ class GeneroController extends Controller{
     return $this->obtenerTodos(new Genero(), 'generos', $res);
   }
   // --- METODO PARA OBTENER UN UNICO GENEROS ---
-  public function obtenerGeneros(Request $req, Response $res, $args) {
+  public function obtenerGenero(Request $req, Response $res, $args) {
     return $this->obtenerUnico(new Genero(), 'generos', $args['id'], $res);
   }
   // --- METODO PARA CREAR UN GENEROS ---
@@ -22,11 +22,11 @@ class GeneroController extends Controller{
     return $this->crear(new Genero(), 'generos', $req->getParsedBody(), $req->getUploadedFiles(), $res);
   }
   // --- METODO PARA ELIMINAR UN GENEROS ---
-  public function eliminarGeneros(Request $req, Response $res, $args) {
+  public function eliminarGenero(Request $req, Response $res, $args) {
     return $this->elimnar(new Genero(), 'generos', $args['id'], $res);
   }
   // --- METODO PARA ACTUALIZAR UN GENEROS ---
-  public function actualizarGeneros(Request $req, Response $res, $args) {
+  public function actualizarGenero(Request $req, Response $res, $args) {
     return $this->actualizar(new Genero(), 'generos', $args['id'], $req->getParsedBody(), $req->getUploadedFiles(), $res);
   }
 }

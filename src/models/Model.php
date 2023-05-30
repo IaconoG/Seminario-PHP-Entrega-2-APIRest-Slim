@@ -16,35 +16,28 @@ class Model{
     // $sql = "INSERT INTO $tabla (nombre, imagen, tipo_imagen, descripcion, url, id_genero, id_plataforma) VALUES (:nombre, :imagen, :tipo_imagen, :descripcion, :url, :id_genero, :id_plataforma)";
     $sql = "INSERT INTO $tabla (";
     $parametros = [];
-    if ($this->getNombre() != null) {
-      $sql .= "nombre, ";
-      $parametros[':nombre'] = $this->getNombre();
-    }
+
+    $sql .= "nombre, ";
+    $parametros[':nombre'] = $this->getNombre();
+
     if ($tabla == 'juegos') {
-      if ($this->getImagen() != null) {
-          $sql .= "imagen, ";
-          $parametros[':imagen'] = $this->getImagen();
-      }
-      if ($this->getTipoImagen() != null) {
-          $sql .= "tipo_imagen, ";
-          $parametros[':tipo_imagen'] = $this->getTipoImagen();
-      }
-      if ($this->getDescripcion() != null) {
-          $sql .= "descripcion, ";
-          $parametros[':descripcion'] = $this->getDescripcion();
-      }
-      if ($this->getUrl() != null) {
-          $sql .= "url, ";
-          $parametros[':url'] = $this->getUrl();
-      }
-      if ($this->getIdGenero() != null) {
-        $sql .= "id_genero, ";
-        $parametros[':id_genero'] = $this->getIdGenero();
-      }
-      if ($this->getIdPlataforma() != null) {
-        $sql .= "id_plataforma, ";
-        $parametros[':id_plataforma'] = $this->getIdPlataforma();
-      }
+      $sql .= "imagen, ";
+      $parametros[':imagen'] = $this->getImagen();
+
+      $sql .= "tipo_imagen, ";
+      $parametros[':tipo_imagen'] = $this->getTipoImagen();
+
+      $sql .= "descripcion, ";
+      $parametros[':descripcion'] = $this->getDescripcion();
+
+      $sql .= "url, ";
+      $parametros[':url'] = $this->getUrl();
+
+      $sql .= "id_genero, ";
+      $parametros[':id_genero'] = $this->getIdGenero();
+
+      $sql .= "id_plataforma, ";
+      $parametros[':id_plataforma'] = $this->getIdPlataforma();
     }
     $sql = rtrim($sql, ', '); 
     $sql .= ") VALUES (";

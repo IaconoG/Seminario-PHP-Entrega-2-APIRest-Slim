@@ -111,26 +111,26 @@ class Model{
           $parametros[':url'] = $this->getUrl();
       }
       if ($this->getIdGenero() != null) {
-        $sql .= "id_genero, ";
+        $sql .= "id_genero = :id_genero, ";
         $parametros[':id_genero'] = $this->getIdGenero();
       }
       if ($this->getIdPlataforma() != null) {
-        $sql .= "id_plataforma, ";
+        $sql .= "id_plataforma = :id_plataforma, ";
         $parametros[':id_plataforma'] = $this->getIdPlataforma();
       }
     }
-
+    
     $sql = rtrim($sql, ', '); 
-      // rtrim -> Eliminar la última coma y espacio en blanco
-    $sql .= " WHERE id = :id";
-    $parametros[':id'] = $id;
+    // rtrim -> Eliminar la última coma y espacio en blanco
 
+    $sql .= " WHERE $tabla.id = :id ";
+    $parametros[':id'] = $id;
+    
     $stmt = $conn->prepare($sql);
 
     foreach ($parametros as $param => $value) {
       $stmt->bindValue($param, $value);
     }
-
     // $stmt->bindValue(':id_genero', $this->id_genero); // No permite modificar
     // $stmt->bindValue(':id_plataforma', $this->id_plataforma); // No permite modificar
 

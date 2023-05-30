@@ -81,9 +81,9 @@ class Controller {
         // getMetadata('uri') -> devuelve la ubicacion del archivo temporal
         // getClientMediaType() -> devuelve el tipo de media del archivo
       }
-      $sql = $model->crearDato(); // FIXME: Eliminar comentarios
+      $model->crearDato();
       $res->getBody()->write(json_encode([
-        'mensaje' => 'Juego creado con exito'
+        'mensaje' => 'Dato almacenado con exito'
       ]));
       return $res
         ->withHeader('Content-Type', 'application/json') 
@@ -164,8 +164,10 @@ class Controller {
         }
       }
       if ($allCamposVacios) {
-        if (!empty($files['imagen']->getClientFilename())) {
-          $allCamposVacios = false;
+        if (!$files == null) {
+          if (!empty($files['imagen']->getClientFilename())) {
+            $allCamposVacios = false;
+          }
         }
       }
       if ($allCamposVacios) {

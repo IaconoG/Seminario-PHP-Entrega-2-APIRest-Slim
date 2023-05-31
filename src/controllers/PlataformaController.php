@@ -19,7 +19,7 @@ class PlataformaController extends Controller{
   }
   // --- METODO PARA CREAR UNA PLATAFORMA ---
   public function crearPlataforma(Request $req, Response $res, $args) { 
-    return $this->crear(new Plataforma(), 'plataformas', $req->getParsedBody(), $req->getUploadedFiles(), $res);
+    return $this->crear(new Plataforma(), 'plataformas', $req, null, $res);
   }
   // --- METODO PARA ELIMINAR UNA PLATAFORMA ---
   public function eliminarPlataforma(Request $req, Response $res, $args) {
@@ -27,6 +27,6 @@ class PlataformaController extends Controller{
   }
   // --- METODO PARA ACTUALIZAR UNA PLATAFORMA ---
   public function actualizarPlataforma(Request $req, Response $res, $args) {
-    return $this->actualizar(new Plataforma(), 'plataformas', $args['id'], $req->getParsedBody(), $req->getUploadedFiles(), $res);
+    return $this->actualizar(new Plataforma(), 'plataformas', $args['id'], $req, null, $res);
   }
 }

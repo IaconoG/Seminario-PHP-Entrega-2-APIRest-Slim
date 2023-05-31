@@ -19,7 +19,7 @@ class JuegoController extends Controller{
   }
   // --- METODO PARA CREAR UN JUEGO ---
   public function crearJuego(Request $req, Response $res, $args) { 
-    return $this->crear(new Juego(), 'juegos', $req->getParsedBody(), $req->getUploadedFiles(), $res);
+    return $this->crear(new Juego(), 'juegos', $req, $req->getUploadedFiles(), $res); // FIXME: Si se envia por json deberia elimnar el req->getUploadedFiles()
   }
   // --- METODO PARA ELIMINAR UN JUEGO ---
   public function eliminarJuego(Request $req, Response $res, $args) {
@@ -27,7 +27,7 @@ class JuegoController extends Controller{
   }
   // --- METODO PARA ACTUALIZAR UN JUEGO ---
   public function actualizarJuego(Request $req, Response $res, $args) {
-    return $this->actualizar(new Juego(), 'juegos', $args['id'], $req->getParsedBody(), $req->getUploadedFiles(), $res);
+    return $this->actualizar(new Juego(), 'juegos', $args['id'], $req, $req->getUploadedFiles(), $res); // FIXME: Si se envia por json deberia elimnar el req->getUploadedFiles()
   }
 }
 

@@ -43,8 +43,14 @@ class Controller {
         ->withStatus(500);
     }
   }
-  protected function crear($model, $tabla, $datos, $files, $res) { 
+  protected function crear($model, $tabla, $datos, $files, $res) { // FIXME: Si se envia por json deberia elimnar el files
     try {
+      // $datos = $datos->getParsedBody(); // getParsedBody() -> devuelve los datos del formulario como un array asociativo | // FIXME: En caso de que no se envie json 
+      $datos = json_decode($datos->getBody()->getContents(), true);
+       // getBody() -> devuelve un flujo de datos (stream) que representa el contenido del cuerpo de la solicitud
+        // getContents() -> devuelve todo el contenido del flujo de datos (stream) en una cadena
+        // json_decode() -> convierte un string en un array asociativo
+
       // Validacions de los datos 
       if ($datos == null && $files == null) {
         throw new ErrorEnvioFormularioException();
@@ -141,9 +147,10 @@ class Controller {
         ->withStatus(500);
     }
   }
-  protected function actualizar($model, $tabla, $id, $datos, $files, $res) {
+  protected function actualizar($model, $tabla, $id, $datos, $files, $res) { // FIXME: Si se envia por json deberia elimnar el files
     try {
-      unset($datos['_method']); // Ya no necesitamos este dato
+      $datos = json_decode($datos->getBody()->getContents(), true); // Convierte el json en un array asociativo
+      unset($datos['_method']); // Ya no necesitamos este dato (creo) :D 
       /*
         Si no se envia nada en el formulario
         Si el formulario no envia nada, pero envia el _method que es solo para que el post se comporte como un patch 

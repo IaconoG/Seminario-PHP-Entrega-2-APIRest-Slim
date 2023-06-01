@@ -3,7 +3,10 @@ namespace App\Controllers;
 
 use Psr\Http\Message\ResponseInterface as Response;
 use Psr\Http\Message\ServerRequestInterface as Request;
-use Slim\Views\PhpRenderer;
+
+use App\Exceptions\ErrorEnvioFormularioException;
+use App\Exceptions\CamposVaciosActualizarException;
+use App\Exceptions\NoExisteEnTablaException;
 
 use App\Models\Juego;
 use App\Views\JuegoView;
@@ -13,9 +16,63 @@ class JuegoController extends Controller{
   public function listarJuegos(Request $req, Response $res, $args) {
     return $this->obtenerTodos(new Juego(), 'juegos', $res);
   }
-  // --- METODO PARA OBTENER UN UNICO JUEGO ---
-  public function obtenerJuego(Request $req, Response $res, $args) {
-    return $this->obtenerUnico(new Juego(), 'juegos', $args['id'], $res);
+  // --- METODO PARA OBTENER JUEGOS SEGUN PARAMETROS ---
+  public function buscarJuegos(Request $req, Response $res, $args) {
+    try {
+      $parametros = $req->getQueryParams();
+
+      if ($parametros == null) {
+        throw new ErrorEnvioFormularioException();
+      }
+      if ($parametros['nombre'] == null && $parametros['id_genero'] == null && $parametros['id_plataforma'] == null && $parametros['orden'] == null) { // Esto se puede mejorar :/
+        throw new CamposVaciosActualizarException('juegos');
+      }
+
+      $juegos = Juego::buscarJuegos($parametros);
+      if ($juego == null) {
+        throw new NoExisteEnTablaException('juegos');
+      }
+
+      $res->getBody()->write(json_encode([
+        'mensaje' => 'La busqueda se realizo con exito',
+        'juegos' => $juegos
+      ]));
+      return $res
+        ->withHeader('Content-Type', 'application/json')
+        ->withStatus(200);
+
+      return $res
+        ->withHeader('Content-Type', 'application/json')
+        ->withStatus(200);
+    } catch (ErrorEnvioFormularioException $e) {
+      $res->getBody()->write(json_encode([
+        'error' => $e->getMessage()
+      ]));
+      return $res
+        ->withHeader('Content-Type', 'application/json')
+        ->withStatus(400);
+    } catch (CamposVaciosActualizarException $e) {
+      $res ->getBody()->write(json_encode([
+        'error' => $e->getMessage()
+      ]));
+      return $res
+        ->withHeader('Content-Type', 'application/json')
+        ->withStatus(400);
+    } catch (NoExisteEnTablaException $e){
+      $res->getBody()->write(json_encode([
+        'error' => $e->getMessage()
+      ]));
+      return $res
+        ->withHeader('Content-Type', 'application/json')
+        ->withStatus(404);
+    } catch (\Exception $e){
+      $res->getBody()->write(json_encode([
+        'error' => $e->getMessage()
+      ]));
+      return $res
+        ->withHeader('Content-Type', 'application/json')
+        ->withStatus(500);
+    }
   }
   // --- METODO PARA CREAR UN JUEGO ---
   public function crearJuego(Request $req, Response $res, $args) { 

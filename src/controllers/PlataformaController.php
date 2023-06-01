@@ -13,10 +13,6 @@ class PlataformaController extends Controller{
   public function listarPlataformas(Request $req, Response $res, $args) {
     return $this->obtenerTodos(new Plataforma(), 'plataformas', $res);
   }
-  // --- METODO PARA OBTENER UNA UNICA PLATAFORMA ---
-  public function obtenerPlataforma(Request $req, Response $res, $args) {
-    return $this->obtenerUnico(new Plataforma(), 'plataformas', $args['id'], $res);
-  }
   // --- METODO PARA CREAR UNA PLATAFORMA ---
   public function crearPlataforma(Request $req, Response $res, $args) { 
     return $this->crear(new Plataforma(), 'plataformas', $req, null, $res);

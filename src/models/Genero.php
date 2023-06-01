@@ -25,10 +25,6 @@ class Genero extends Model{
   public function obtenerTodos() {
     return $this->obtenerTodosDatos('generos');
   }
-  // --- OBTENER UNICO ---
-  public function obtenerUnico($id) {
-    return $this->obtener($id, 'generos');
-  }
   // --- CREAR ---
   public function crearDato() { 
     return $this->crear('generos');
@@ -102,7 +98,6 @@ class Genero extends Model{
 
 //   return $nombre;
 // }
-// // TODO: return Obtener el nombre del elemento eliminado 
 // // --- ACTUALIZAR ---
 
 // // --- OBTENER ---

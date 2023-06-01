@@ -12,37 +12,6 @@ use App\Exceptions\CamposVaciosCrearException;
 use App\Exceptions\ErrorEnvioFormularioException;
 
 class Controller {
-  protected function obtenerUnico($model, $tabla, $id, $res) {
-    try {
-      if (!$model->existeDato($id)) {
-        throw new NoExisteEnTablaException($tabla);
-      }
-
-      $dato = $model->obtenerUnico($id);
-
-      $res->getBody()->write(json_encode([
-        'dato' => $dato
-      ]));
-      return $res
-        ->withHeader('Content-Type', 'application/json')
-        ->withStatus(200);
-
-    } catch (NoExisteEnTablaException $e) {
-      $res->getBody()->write(json_encode([
-        'error' => $e->getMessage()
-      ]));
-      return $res
-        ->withHeader('Content-Type', 'application/json')
-        ->withStatus(400);
-    } catch (\Exception $e) {
-      $res->getBody()->write(json_encode([
-        'error' => $e->getMessage()
-      ]));
-      return $res
-        ->withHeader('Content-Type', 'application/json')
-        ->withStatus(500);
-    }
-  }
   protected function crear($model, $tabla, $datos, $files, $res) { // FIXME: Si se envia por json deberia elimnar el files
     try {
       // $datos = $datos->getParsedBody(); // getParsedBody() -> devuelve los datos del formulario como un array asociativo | // FIXME: En caso de que no se envie json 
@@ -56,7 +25,7 @@ class Controller {
         throw new ErrorEnvioFormularioException();
       }
 
-      $errores = $this->validarDatos($datos, $files, $res);
+      $errores = $this->validarDatos($datos, $files);
       if (!empty($errores)) {
         throw new CamposVaciosCrearException($errores);
       }
@@ -275,7 +244,7 @@ class Controller {
     return $model->obtenerTodos();
   }
   // --- Metodos Extas ---
-  protected function validarDatos($datos, $files, $res) {
+  protected function validarDatos($datos, $files) {
     $errores = [];
     // --- Validacion de datos ---
     $metodo = '';

@@ -25,8 +25,6 @@ $app->post('/generos/crear', GeneroController::class . ':crearGenero');
 $app->delete('/generos/eliminar/{id}', GeneroController::class . ':eliminarGenero');
 // Ruta para actualizar un genero
 $app->post('/generos/actualizar/{id}', GeneroController::class . ':actualizarGenero'); // POST porque PATCH no quiere evniar los datos | El formulario tiene un campo que cambio el metodo enviado a patch
-// Ruta para obtener un genero
-$app->get('/generos/obtener/{id}', GeneroController::class . ':obtenerGenero');
 
 use App\Controllers\JuegoController;
 // Ruta para mostrar todos los juegos
@@ -38,19 +36,17 @@ $app->delete('/juegos/eliminar/{id}', JuegoController::class . ':eliminarJuego')
 // Ruta para actualizar un genero
 $app->post('/juegos/actualizar/{id}', JuegoController::class . ':actualizarJuego'); // POST porque PATCH no quiere evniar los datos | El formulario tiene un campo que cambio el metodo enviado a patch
 // Ruta para obtener un genero
-$app->get('/juegos/obtener/{id}', JuegoController::class . ':obtenerJuego');
+$app->get('/juegos/buscar', JuegoController::class . ':buscarJuegos'); // FIXME: Utilizar params
 
 use App\Controllers\PlataformaController;
-// Ruta para mostrar todos los juegos
+// Ruta para mostrar todos las plataformas
 $app->get('/plataformas/obtener/todos', PlataformaController::class . ':listarPlataformas');
-// Ruta para crear un nuevo genero
+// Ruta para crear una nueva plataforma
 $app->post('/plataformas/crear', PlataformaController::class . ':crearPlataforma');
-// Ruta para eliminar un genero
+// Ruta para eliminar una plataforma
 $app->delete('/plataformas/eliminar/{id}', PlataformaController::class . ':eliminarPlataforma');
-// Ruta para actualizar un genero
+// Ruta para actualizar una plataforma
 $app->post('/plataformas/actualizar/{id}', PlataformaController::class . ':actualizarPlataforma'); // POST porque PATCH no quiere evniar los datos | El formulario tiene un campo que cambio el metodo enviado a patch
-// Ruta para obtener un genero
-$app->get('/plataformas/obtener/{id}', PlataformaController::class . ':obtenerPlataforma');
 
 
 

@@ -25,10 +25,6 @@ class Plataforma extends Model{
   public function obtenerTodos() {
     return $this->obtenerTodosDatos('plataformas');
   }
-  // --- OBTENER UNICO ---
-  public function obtenerUnico($id) {
-    return $this->obtener($id, 'plataformas');
-  }
   // --- CREAR ---
   public function crearDato() { 
     return $this->crear('plataformas');

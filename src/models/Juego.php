@@ -71,9 +71,36 @@ class Juego extends Model{
   public function obtenerTodos() {
     return $this->obtenerTodosDatos('juegos');
   }
-  // --- OBTENER UNICO ---
-  public function obtenerUnico($id) {
-    return $this->obtener($id, 'juegos');
+  // --- OBTENER JUEGOS SEGUN PARAMETROS ---
+  public static function buscarJuegos($datos) { // Unico metodo que no se realiza en la clase padre
+    $db = new DB();
+    $conn = $db->getConnection();
+
+    $sql = "SELECT * FROM `juegos` WHERE ";
+
+    foreach ($datos as $key => $value) {
+      if ($value != null) {
+        $sql .= "$key = :$key AND ";
+      }
+    }
+    $sql = rtrim($sql, ' AND ');
+    
+    $stmt = $conn->prepare($sql);
+
+    foreach ($datos as $key => $value) {
+      if ($value != null) {
+        $stmt->bindValue(":$key", $value);
+      }
+    }
+    
+    $stmt->execute();
+    $dato = $stmt->fetchALL(\PDO::FETCH_OBJ);
+      // fetch() -> devuelve una fila de un conjunto de resultados
+      // \PDO::FETCH_OBJ -> le dice a PDO que cree una instancia de la clase stdClass y que asigne los valores de las columnas en la fila a las propiedades con el mismo nombre
+
+    $db = null;
+    $stmt = null;
+    return $dato; 
   }
 
   // --- CREAR ---

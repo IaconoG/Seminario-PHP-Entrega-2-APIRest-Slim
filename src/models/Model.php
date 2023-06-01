@@ -57,24 +57,6 @@ class Model{
     $db = null;
     $stmt = null;
   }
-  protected function obtener($id, $tabla) {
-    $db = new DB();
-    $conn = $db->getConnection();
-
-    $sql = "SELECT * FROM $tabla WHERE id = :id";
-    $stmt = $conn->prepare($sql);
-
-    $stmt->bindValue(':id', $id);
-    $stmt->execute();
-
-    $dato = $stmt->fetch(\PDO::FETCH_OBJ);
-      // fetch() -> devuelve una fila de un conjunto de resultados
-      // \PDO::FETCH_OBJ -> le dice a PDO que cree una instancia de la clase stdClass y que asigne los valores de las columnas en la fila a las propiedades con el mismo nombre
-
-    $db = null;
-    $stmt = null;
-    return $dato;  
-  }
   protected function actualizar($id, $tabla) {
     $db = new DB();
     $conn = $db->getConnection();

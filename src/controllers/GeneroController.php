@@ -13,10 +13,6 @@ class GeneroController extends Controller{
   public function listarGeneros(Request $req, Response $res, $args) {
     return $this->obtenerTodos(new Genero(), 'generos', $res);
   }
-  // --- METODO PARA OBTENER UN UNICO GENEROS ---
-  public function obtenerGenero(Request $req, Response $res, $args) {
-    return $this->obtenerUnico(new Genero(), 'generos', $args['id'], $res);
-  }
   // --- METODO PARA CREAR UN GENEROS ---
   public function crearGenero(Request $req, Response $res, $args) { 
     return $this->crear(new Genero(), 'generos', $req, null, $res);

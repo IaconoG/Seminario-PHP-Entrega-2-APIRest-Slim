@@ -24,12 +24,21 @@ class JuegoController extends Controller{
       if ($parametros == null) {
         throw new ErrorEnvioFormularioException();
       }
-      if ($parametros['nombre'] == null && $parametros['id_genero'] == null && $parametros['id_plataforma'] == null && $parametros['orden'] == null) { // Esto se puede mejorar :/
+      // Validascion de campos vacios
+      $cantidadParametros = count($parametros);
+        // count() -> devuelve la cantidad de elementos de un array
+      $cantidadParametrosVacios = 0;
+      foreach ($parametros as $parametro) {
+        if ($parametro == '') {
+          $cantidadParametrosVacios++;
+        }
+      }
+      if ($cantidadParametros == $cantidadParametrosVacios) {
         throw new CamposVaciosActualizarException('juegos');
       }
 
       $juegos = Juego::buscarJuegos($parametros);
-      if ($juego == null) {
+      if ($juegos == null) {
         throw new NoExisteEnTablaException('juegos');
       }
 

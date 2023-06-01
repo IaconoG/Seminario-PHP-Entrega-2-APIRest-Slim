@@ -36,7 +36,7 @@ $app->delete('/juegos/eliminar/{id}', JuegoController::class . ':eliminarJuego')
 // Ruta para actualizar un genero
 $app->post('/juegos/actualizar/{id}', JuegoController::class . ':actualizarJuego'); // POST porque PATCH no quiere evniar los datos | El formulario tiene un campo que cambio el metodo enviado a patch
 // Ruta para obtener un genero
-$app->get('/juegos/buscar', JuegoController::class . ':buscarJuegos'); // FIXME: Utilizar params
+$app->get('/juegos/buscar', JuegoController::class . ':buscarJuegos'); // juegos/buscar?nombre=&id_genero=&id_plataforma=&orden=
 
 use App\Controllers\PlataformaController;
 // Ruta para mostrar todos las plataformas

@@ -29,13 +29,13 @@ $app->post('/generos/actualizar/{id}', GeneroController::class . ':actualizarGen
 use App\Controllers\JuegoController;
 // Ruta para mostrar todos los juegos
 $app->get('/juegos/obtener/todos', JuegoController::class . ':listarJuegos');
-// Ruta para crear un nuevo genero
+// Ruta para crear un nuevo juego
 $app->post('/juegos/crear', JuegoController::class . ':crearJuego');
-// Ruta para eliminar un genero
+// Ruta para eliminar un juego
 $app->delete('/juegos/eliminar/{id}', JuegoController::class . ':eliminarJuego');
-// Ruta para actualizar un genero
+// Ruta para actualizar un juego
 $app->post('/juegos/actualizar/{id}', JuegoController::class . ':actualizarJuego'); // POST porque PATCH no quiere evniar los datos | El formulario tiene un campo que cambio el metodo enviado a patch
-// Ruta para obtener un genero
+// Ruta para obtener un juego
 $app->get('/juegos/buscar', JuegoController::class . ':buscarJuegos'); // juegos/buscar?nombre=&id_genero=&id_plataforma=&orden=
 
 use App\Controllers\PlataformaController;

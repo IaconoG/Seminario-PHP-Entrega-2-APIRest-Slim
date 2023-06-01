@@ -24,7 +24,7 @@ $app->post('/generos/crear', GeneroController::class . ':crearGenero');
 // Ruta para eliminar un genero
 $app->delete('/generos/eliminar/{id}', GeneroController::class . ':eliminarGenero');
 // Ruta para actualizar un genero
-$app->post('/generos/actualizar/{id}', GeneroController::class . ':actualizarGenero'); // POST porque PATCH no quiere evniar los datos | El formulario tiene un campo que cambio el metodo enviado a patch
+$app->post('/generos/actualizar/{id}', GeneroController::class . ':actualizarGenero'); // FIXME: POST porque PATCH no quiere evniar los datos | El formulario tiene un campo que cambio el metodo enviado a patch
 
 use App\Controllers\JuegoController;
 // Ruta para mostrar todos los juegos
@@ -34,7 +34,7 @@ $app->post('/juegos/crear', JuegoController::class . ':crearJuego');
 // Ruta para eliminar un genero
 $app->delete('/juegos/eliminar/{id}', JuegoController::class . ':eliminarJuego');
 // Ruta para actualizar un genero
-$app->post('/juegos/actualizar/{id}', JuegoController::class . ':actualizarJuego'); // POST porque PATCH no quiere evniar los datos | El formulario tiene un campo que cambio el metodo enviado a patch
+$app->post('/juegos/actualizar/{id}', JuegoController::class . ':actualizarJuego'); // FIXME: POST porque PATCH no quiere evniar los datos | El formulario tiene un campo que cambio el metodo enviado a patch
 // Ruta para obtener un genero
 $app->get('/juegos/buscar', JuegoController::class . ':buscarJuegos'); // juegos/buscar?nombre=&id_genero=&id_plataforma=&orden=
 

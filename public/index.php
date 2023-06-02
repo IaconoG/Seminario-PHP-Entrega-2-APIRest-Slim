@@ -31,7 +31,7 @@ use App\Controllers\JuegoController;
 $app->get('/juegos/buscar/todos', JuegoController::class . ':listarJuegos');
 // Ruta para crear un nuevo juegos
 $app->post('/juegos/crear', JuegoController::class . ':crearJuego');
-// Ruta para eliminar un juegos
+// Ruta para eliminar un juego
 $app->delete('/juegos/eliminar/{id}', JuegoController::class . ':eliminarJuego');
 // Ruta para actualizar un juegos
 $app->patch('/juegos/actualizar/{id}', JuegoController::class . ':actualizarJuego'); 

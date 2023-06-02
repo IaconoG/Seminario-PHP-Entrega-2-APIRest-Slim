@@ -53,4 +53,3 @@ $app->patch('/plataformas/actualizar/{id}', PlataformaController::class . ':actu
 $app->run();     
 
 
-//TODO: Al momento de buscar un dato en la tabla importa la mayuscula y minuscula!, resolver

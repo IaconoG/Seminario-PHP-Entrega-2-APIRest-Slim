@@ -3,31 +3,28 @@ namespace App\Controllers; // -> esta linea determina la carpeta donde se encuen
 
 use Psr\Http\Message\ResponseInterface as Response;
 use Psr\Http\Message\ServerRequestInterface as Request;
-use Slim\Views\PhpRenderer;
 
-use App\Exceptions\TablaSinDatosException;
 use App\Exceptions\NoExisteEnTablaException;
-use App\Exceptions\CamposVaciosActualizarException;
-use App\Exceptions\CamposVaciosCrearException;
-use App\Exceptions\ErrorEnvioFormularioException;
+use App\Exceptions\CamposVaciosException;
+use App\Exceptions\CamposCrearException;
+use App\Exceptions\ErrorEnvioParametrosException;
 
 class Controller {
-  protected function crear($model, $tabla, $datos, $files, $res) { // FIXME: Si se envia por json deberia elimnar el files
+  protected function crear($model, $tabla, $datos, $res) {
     try {
-      // $datos = $datos->getParsedBody(); // getParsedBody() -> devuelve los datos del formulario como un array asociativo | // FIXME: En caso de que no se envie json 
       $datos = json_decode($datos->getBody()->getContents(), true);
        // getBody() -> devuelve un flujo de datos (stream) que representa el contenido del cuerpo de la solicitud
         // getContents() -> devuelve todo el contenido del flujo de datos (stream) en una cadena
         // json_decode() -> convierte un string en un array asociativo
 
       // Validacions de los datos 
-      if ($datos == null && $files == null) {
-        throw new ErrorEnvioFormularioException();
+      if ($datos == null) {
+        throw new ErrorEnvioParametrosException('No se proporcionaron parametros en la solicitud');
       }
 
-      $errores = $this->validarDatos($datos, $files);
+      $errores = $this->validarCampos($datos, $model, $tabla);
       if (!empty($errores)) {
-        throw new CamposVaciosCrearException($errores);
+        throw new CamposCrearException($errores);
       }
 
       // Asignamos los datos al objeto
@@ -43,41 +40,29 @@ class Controller {
           $model->$metodos($valor);
         }
       }
-      if (!empty($files)) {
-        $model->setTipoImagen($files['imagen']->getClientMediaType());
-        $model->setImagen(substr(base64_encode(
-          file_get_contents(
-            $files['imagen']
-              ->getStream()
-              ->getMetadata('uri')
-            )
-          ),0,5)); // FIXME: el substr esta porque no tengo ganas de envioar todo el choclo ese :D (eliminar) 
-        // getStream() -> devuelve un flujo de datos (stream) que representa el contenido del archivo cargado
-        // getMetadata('uri') -> devuelve la ubicacion del archivo temporal
-        // getClientMediaType() -> devuelve el tipo de media del archivo
-      }
+
       $model->crearDato();
       $res->getBody()->write(json_encode([
-        'mensaje' => 'Dato almacenado con exito'
+        'mensaje' => 'Dato creado con exito'
       ]));
       return $res
         ->withHeader('Content-Type', 'application/json') 
         ->withStatus(200);
-    } catch (ErrorEnvioFormularioException $e) {
+    } catch (ErrorEnvioParametrosException $e) {
       $res->getBody()->write(json_encode([
         'error' => $e->getMessage()
       ]));
       return $res
         ->withHeader('Content-Type', 'application/json') 
         ->withStatus(400);
-    } catch (CamposVaciosCrearException $e) {
+    } catch (CamposCrearException $e) {
       $res->getBody()->write(json_encode([
         'error' => $e->getMessage()
       ]));
       return $res
         ->withHeader('Content-Type', 'application/json')
-        ->withStatus(400); // Bad Request -> faltan datos
-    } catch (\Exception $e) {
+        ->withStatus(400); 
+    } catch (\PDOException $e) {
       $res->getBody()->write(json_encode([
         'error' => $e->getMessage()
       ]));
@@ -88,13 +73,14 @@ class Controller {
   }
   protected function elimnar($model, $tabla, $id, $res) {
     try {
-      if (!$model->existeDato($id)) {
-        throw new NoExisteEnTablaException($tabla);
+      $correctaEliminacion = $model->eliminarDato($id);
+
+      if (!$correctaEliminacion) {
+        throw new NoExisteEnTablaException('No se pudo eliminar el dato debido a que no existe en la tabla');
       }
 
-      $nombreDatoEliminado = $model->eliminarDato($id);
       $res->getBody()->write(json_encode([
-        'mensaje' => 'El dato '. $nombreDatoEliminado .' fue eliminado con exito'
+        'mensaje' => 'El dato fue eliminado con exito'
       ]));
       return $res
         ->withHeader('Content-Type', 'application/json')
@@ -106,55 +92,54 @@ class Controller {
       ]));
       return $res
         ->withHeader('Content-Type', 'application/json')
-        ->withStatus(400);
-    } catch (\Exception $e) {
+        ->withStatus(404);
+    } catch (\PDOException $e) { //  Estas excepciones están relacionadas con errores específicos de la base de datos cuando se utiliza PDO
       $res->getBody()->write(json_encode([
-        'error' => $e->getMessage()
+        'error PDO' => $e->getMessage()
       ]));
       return $res
         ->withHeader('Content-Type', 'application/json')
         ->withStatus(500);
     }
   }
-  protected function actualizar($model, $tabla, $id, $datos, $files, $res) { // FIXME: Si se envia por json deberia elimnar el files
+  protected function actualizar($model, $tabla, $id, $datos, $res) {
     try {
-      $datos = json_decode($datos->getBody()->getContents(), true); // Convierte el json en un array asociativo
-      unset($datos['_method']); // Ya no necesitamos este dato (creo) :D 
-      /*
-        Si no se envia nada en el formulario
-        Si el formulario no envia nada, pero envia el _method que es solo para que el post se comporte como un patch 
-        count($datos) -> devuelve la cantidad de elementos de un array
-      */
-      if (($datos == null && $files == null)) {
-        throw new ErrorEnvioFormularioException();
+      $datos = json_decode($datos->getBody()->getContents(), true);
+      if (($datos == null)) {
+        throw new ErrorEnvioParametrosException('No se proporcionaron parametros en la solicitud');
       }
-      if (!$model->existeDato($id)) {
-        throw new NoExisteEnTablaException($tabla);
+      
+      // Validacions de los campos vacios
+      if ($this->validarCamposVacios($datos)) {
+        throw new CamposVaciosException($tabla);
       }
-      // Validacions de los datos
-      $allCamposVacios = true;
-      foreach($datos as $dato) {
-        if (!empty($dato)) {
-          $allCamposVacios = false;
-          break;
-        }
-      }
-      if ($allCamposVacios) {
-        if (!$files == null) {
-          if (!empty($files['imagen']->getClientFilename())) {
-            $allCamposVacios = false;
+      // Validacion solo para juegos
+      if ($tabla == 'juegos') {
+        // Eliminamos los campos vacios
+        foreach ($datos as $atributo => $valor) { 
+          if ($valor == "") {
+            unset($datos[$atributo]);
           }
         }
+        $errores = $this->validarCampos($datos, $model, $tabla); // Validamos los campos
+        // Eliminamos los campos que no estan en el formulario
+        foreach ($errores as $atributo => $valor) {
+          if (!isset($datos[$atributo])) {
+            unset($errores[$atributo]);
+          }
+        }
+        if (!empty($errores)) {
+          throw new CamposCrearException($errores);
+        }
       }
-      if ($allCamposVacios) {
-        throw new CamposVaciosActualizarException($tabla);
-      }
+    
+
       // Asignamos los datos al objeto 
       /*
         - Asignamos los datos del formulario a las propiedades del objeto siempre y cuand el campo no este vacio
         - Contruyendo el nombre del metodo setter de cada propiedad
         - Si el objeto posee un metodo con ese nombre, se llama al metodo con el valor del elemento correspondiente en el array $datos como argumento
-      */
+        */
       $metodos = '';
       foreach($datos as $atributo => $valor){
         if (!empty($valor)) {
@@ -167,50 +152,43 @@ class Controller {
           }
         }
       }
-      if (!empty($files)) {
-        $model->setTipoImagen($files['imagen']->getClientMediaType());
-        $model->setImagen(substr(base64_encode(
-          file_get_contents(
-            $files['imagen']
-              ->getStream()
-              ->getMetadata('uri')
-            )
-          ),0,5)); // FIXME: el substr esta porque no tengo ganas de envioar todo el choclo ese :D (eliminar) 
-      }
-
+  
       // Actualizamos el dato
-      $datoActualizado = $model->actualizarDato($id);
+      $fueActualizado = $model->actualizarDato($id); 
+      if (!$fueActualizado) { 
+        throw new NoExisteEnTablaException('No se pudo actualizar el dato debido a que no existe en la tabla'); 
+      }
       
       $res->getBody()->write(json_encode([
-        'mensaje' => 'El dato ' . $datoActualizado->nombre .' fue actualizado con exito'
+        'mensaje' => 'El dato fue actualizado con exito',
       ]));
       return $res
         ->withHeader('Content-Type', 'application/json')
         ->withStatus(200);
-    } catch (ErrorEnvioFormularioException $e){
+    } catch (ErrorEnvioParametrosException $e){
       $res->getBody()->write(json_encode([
         'error' => $e->getMessage()
       ]));
       return $res
         ->withHeader('Content-Type', 'application/json') 
         ->withStatus(400);
-    } catch (CamposVaciosActualizarException $e) {
-      $res->getBody()->write(json_encode([
-        'error' => $e->getMessage()
-      ]));
-      return $res
-        ->withHeader('Content-Type', 'application/json')
-        ->withStatus(404);
-    } catch (NoExisteEnTablaException $e) {
+    } catch (CamposVaciosException $e) {
       $res->getBody()->write(json_encode([
         'error' => $e->getMessage()
       ]));
       return $res
         ->withHeader('Content-Type', 'application/json')
         ->withStatus(400);
-    } catch (\Exceptoin $e) {
+    } catch (CamposCrearException $e) {
       $res->getBody()->write(json_encode([
         'error' => $e->getMessage()
+      ]));
+      return $res
+        ->withHeader('Content-Type', 'application/json')
+        ->withStatus(404);
+    } catch (\PDOException $e) {
+      $res->getBody()->write(json_encode([
+        'error PDO' => $e->getMessage()
       ]));
       return $res
         ->withHeader('Content-Type', 'application/json')
@@ -218,21 +196,45 @@ class Controller {
     }
   }
   // ---
-  protected function obtenerTodos($model, $tabla, $res) {
+  protected function buscar($model, $tabla, $params, $res) {
     try {
-      $datos = $model->obtenerTodos();
-      if (empty($datos)) {
-        throw new TablaSinDatosException($tabla);
+      if ($tabla == "juegos") {
+        if ($params == null) {
+          throw new ErrorEnvioParametrosException('No se proporcionaron parametros en la solicitud');
+        }
+        if ($this->validarCamposVacios($params)) {
+          throw new CamposVaciosException($tabla);
+        }
+        if (isset($params['buesquedaTodos'])) { // Si se quiere buscar todos los datos
+          if ($params['buesquedaTodos']) {
+            $params = null;
+          }
+        }
       }
-    
+      $datos = $model->buscarDatos($params);
+
       $res->getBody()->write(json_encode([
-        'datos' => $datos
+        'mensaje' => ($datos != null) ? 'Datos obtenidos con exito' : 'No se encontraron datos',
+        'datos' => $datos,
       ]));
       return $res
         ->withHeader('Content-Type', 'application/json')
         ->withStatus(200);
-
-    } catch (\Exception $e) {
+    } catch (ErrorEnvioParametrosException $e) {
+      $res->getBody()->write(json_encode([
+        'error' => $e->getMessage()
+      ]));
+      return $res
+        ->withHeader('Content-Type', 'application/json')
+        ->withStatus(400);
+    } catch (CamposVaciosException $e) {
+      $res->getBody()->write(json_encode([
+        'error' => $e->getMessage()
+      ]));
+      return $res
+        ->withHeader('Content-Type', 'application/json')
+        ->withStatus(400);
+    } catch (\PDOException $e) {
       $res->getBody()->write(json_encode([
         'error' => $e->getMessage()
       ]));
@@ -244,34 +246,75 @@ class Controller {
     return $model->obtenerTodos();
   }
   // --- Metodos Extas ---
-  protected function validarDatos($datos, $files) {
+  private function validarCampos($datos, $model, $tabla) {
     $errores = [];
-    // --- Validacion de datos ---
-    $metodo = '';
-    foreach ($datos as $key => $value) {
-      if (empty($value)) {
-        $metodo = 'set'. ucfirst($key);
-        $errores[$key] = 'El campo '.$key.' es obligatorio';
-      }
+    // --- Validacion de campos ---
+    if (empty($datos['nombre'])) {
+      $errores['nombre'] = 'El campo nombre es obligatorio';
     }
-    // Correccion de mensjae de idGenero y idPlataforma porque no me gusta que se vea idGenro o idPlataforma :D
-    if (isset($errores['idGenero'])) {
-      $errores['idGenero'] = 'El campo genero es obligatorio';
-    }
-    if (isset($errores['idPlataforma'])) {
-      $errores['idPlataforma'] = 'El campo plataforma es obligatorio';
-    }
-
-    // --- Validacion de archivos ---
-    if (isset($files['imagen'])) { // Si se envio el dato imagen
-      $nroError = $files['imagen']->getError();
-      if ($nroError !== UPLOAD_ERR_OK) { // Si se subio una imaben
-        $errores['imagen'] = 'El campo imagen es obligatorio | NRO. Error: '. $nroError;
-        if ($nroError !== UPLOAD_ERR_NO_FILE) { // Otro error
-          $errores['imagen'] = 'Hubo un error al subir la imagen | NRO. Error: '. $nroError;  
+    
+    if ($tabla == 'juegos') {
+      // --- Validacion especifica de datos ---
+        // Validacion de tama;o de imagen
+      if (empty($datos['imagen'])) {
+        $errores['imagen'] = 'El campo imagen es obligatorio';
+      } else {
+        $maxSizeImg = $this->maxCharImgBD($model);
+        if (strlen($datos['imagen']) > $maxSizeImg) {
+          $errores['imagen'] = 'La imagen debe tener un tamano menor a ' . $maxSizeImg . ' caracteres';
         }
-      }   
+          // Validacion de tipo imagen 
+        if (empty($datos['tipoImagen'])) {
+          $errores['tipoImagen'] = 'El campo tipo de imagen es obligatorio';
+        } else {
+          $tiposImage = array('image/jpeg', 'image/png', 'image/gif', 'image/bmp', 'image/webp', 'image/svg+xml');
+          if (!in_array($datos['tipoImagen'], $tiposImage)) {
+            $errores['tipoImagen'] = 'El tipo de imagen debe ser de algun tipo permitido (image/jpeg, image/png, image/gif, image/bmp, image/webp, image/svg+xml)';
+          }
+        }
+      }
+
+        // Validacion de descripcion
+      if (empty($datos['descripcion'])) {
+        $errores['descripcion'] = 'El campo descripcion es obligatorio';
+      } else {
+        $maxSizeDesc = 255;
+        if (strlen($datos['descripcion']) > $maxSizeDesc) {
+          $errores['descripcion'] = 'La descripcion no puede tener mas de ' . $maxSizeDesc . ' caracteres';
+        }
+      }
+        // Validacion de url
+      if (empty($datos['url'])) {
+        $errores['url'] = 'El campo url es obligatorio';
+      } else {
+        $maxSizeDesc = 80;
+        if (strlen($datos['url']) > $maxSizeDesc) {
+          $errores['url'] = 'La url no puede tener mas de ' . $maxSizeDesc . ' caracteres';
+        }
+      }
+        // Validacion de genero
+      if (empty($datos['idGenero'])) {
+        $errores['idGenero'] = 'El campo genero es obligatorio';
+      } 
+        // Validacion de plataforma
+      if (empty($datos['idPlataforma'])) {
+        $errores['idPlataforma'] = 'El campo plataforma es obligatorio';
+      } 
     }
     return $errores;
+  }
+  private function validarCamposVacios($datos){
+    $allCamposVacios = true;
+    foreach($datos as $dato) {
+      if (!empty($dato)) {
+        $allCamposVacios = false;
+        break;
+      }
+    }
+    return $allCamposVacios;
+  }
+
+  private function maxCharImgBD($model) {
+    return $model->getMaxCharImgBD();
   }
 }

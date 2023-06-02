@@ -2,6 +2,7 @@
 namespace App\Models;
 
 use App\Models\DB;
+use PDO;
 
 class Model{
 
@@ -47,6 +48,8 @@ class Model{
     }
     $sql = rtrim($sql, ', ');
     $sql .= ")";
+
+
     $stmt = $conn->prepare($sql);
     foreach ($parametros as $param => $value) {
       $stmt->bindValue($param, $value);
@@ -106,25 +109,19 @@ class Model{
     foreach ($parametros as $param => $value) {
       $stmt->bindValue($param, $value);
     }
-    // $stmt->bindValue(':id_genero', $this->id_genero); // No permite modificar
-    // $stmt->bindValue(':id_plataforma', $this->id_plataforma); // No permite modificar
 
     $stmt->execute();
 
+    $numFilasActualizadas = $stmt->rowCount();
+      // rowCount() -> Devuelve el número de filas afectadas por la última sentencia SQL (UPDATE)
+
     $db = null;
     $stmt = null;
-    return $this->obtener($id, $tabla); // Esto porque quiero el nombre del dato modificado
+    return ($numFilasActualizadas > 0) ? true : false;
   }
   protected function elimnar($id, $tabla) {
     $db = new DB();
     $conn = $db->getConnection();
-
-    $sql = "SELECT nombre FROM $tabla WHERE id = :id";
-    $stmt = $conn->prepare($sql);
-    $stmt->bindValue(':id', $id);
-    $stmt->execute();
-
-    $nombre = $stmt->fetchColumn();
 
     $sql = "DELETE FROM $tabla WHERE id = :id";
     $stmt = $conn->prepare($sql);
@@ -133,19 +130,53 @@ class Model{
 
     $stmt->execute();
 
+    $numFilasEliminadas = $stmt->rowCount();
+      // rowCount() -> Devuelve el número de filas afectadas por la última sentencia SQL (DELETE)
+    
     $db = null;
     $stmt = null;
 
-    return $nombre;
+    return ($numFilasEliminadas > 0) ? true : false;
   }
-  // ---
-  public function obtenerTodosDatos($tabla) {
+  protected function buscar($datos, $tabla) {
     $db = new DB();
     $conn = $db->getConnection();
 
     $sql = "SELECT * FROM $tabla";
-    $stmt = $conn->query($sql);   
-    $datos = $stmt->fetchAll(\PDO::FETCH_OBJ);
+
+    if ($datos != null) {
+      $sql .= " WHERE ";
+      
+      $orden = $datos['orden']; // ASC or DESC
+      unset($datos['orden']);
+
+      foreach ($datos as $key => $value) {
+        if ($value != null) {
+          $sql .= "$key = :$key AND ";
+        }
+      }
+      $sql = rtrim($sql, ' AND '); 
+
+      if ($orden != null) {
+        $sql .= " ORDER BY nombre $orden";
+      }
+    }
+
+    $stmt = $conn->prepare($sql);
+    
+    if ($datos != null) {
+      foreach ($datos as $key => $value) {
+        if ($value != null) {
+          $stmt->bindValue(":$key", $value);
+        }
+      }
+    }
+
+    $stmt->execute();
+
+    $datos = $stmt->fetchALL(\PDO::FETCH_OBJ);
+      // fetch() -> devuelve una fila de un conjunto de resultados
+      // \PDO::FETCH_OBJ -> le dice a PDO que cree una instancia de la clase stdClass y que asigne los valores de las columnas en la fila a las propiedades con el mismo nombre
 
     $db = null; 
     $stmt = null; 
@@ -153,22 +184,18 @@ class Model{
   }
 
   // OTROS METODOS
-  public function existe($id, $tabla) { 
+  public function getMaxCharImgBD() {
     $db = new DB();
     $conn = $db->getConnection();
 
-    $sql = "SELECT 1 FROM $tabla WHERE id = :id LIMIT 1";
-    $stmt = $conn->prepare($sql);
-    $stmt->bindValue(':id', $id);
-    $stmt->execute();
-
-    $existe = $stmt->fetchColumn();
-      // 1 si el registro existe
-      // flase si no se encuentra ningun registro
-
-    $db = null;
-    $stmt = null;
+    $sql = "SELECT CHARACTER_MAXIMUM_LENGTH FROM information_schema.columns WHERE table_name = 'juegos' AND column_name = 'imagen'";
+    $stmt = $conn->query($sql);   
     
-    return $existe !== false;
-  }
+    $columnaImagen = $stmt->fetch(PDO::FETCH_ASSOC);
+    $maxChar = $columnaImagen['CHARACTER_MAXIMUM_LENGTH'];
+
+    $db = null; 
+    $stmt = null; 
+    return $maxChar;
+  }  
 }

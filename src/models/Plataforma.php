@@ -22,8 +22,8 @@ class Plataforma extends Model{
   }
 
   // --- LISTAR ---
-  public function obtenerTodos() {
-    return $this->obtenerTodosDatos('plataformas');
+  public function buscarDatos() {
+    return $this->buscar(null, 'plataformas');
   }
   // --- CREAR ---
   public function crearDato() { 

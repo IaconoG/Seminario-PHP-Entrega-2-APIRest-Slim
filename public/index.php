@@ -18,35 +18,35 @@ $app->get('/', function (Request $req, Response $res, array $args) {
 
 use App\Controllers\GeneroController;
 // Ruta para mostrar todos los generos
-$app->get('/generos/obtener/todos', GeneroController::class . ':listarGeneros');
+$app->get('/generos/buscar/todos', GeneroController::class . ':listarGeneros');
 // Ruta para crear un nuevo genero
 $app->post('/generos/crear', GeneroController::class . ':crearGenero');
 // Ruta para eliminar un genero
 $app->delete('/generos/eliminar/{id}', GeneroController::class . ':eliminarGenero');
 // Ruta para actualizar un genero
-$app->post('/generos/actualizar/{id}', GeneroController::class . ':actualizarGenero'); // FIXME: POST porque PATCH no quiere evniar los datos | El formulario tiene un campo que cambio el metodo enviado a patch
+$app->patch('/generos/actualizar/{id}', GeneroController::class . ':actualizarGenero'); 
 
 use App\Controllers\JuegoController;
 // Ruta para mostrar todos los juegos
-$app->get('/juegos/obtener/todos', JuegoController::class . ':listarJuegos');
-// Ruta para crear un nuevo genero
+$app->get('/juegos/buscar/todos', JuegoController::class . ':listarJuegos');
+// Ruta para crear un nuevo juegos
 $app->post('/juegos/crear', JuegoController::class . ':crearJuego');
-// Ruta para eliminar un genero
+// Ruta para eliminar un juegos
 $app->delete('/juegos/eliminar/{id}', JuegoController::class . ':eliminarJuego');
-// Ruta para actualizar un genero
-$app->post('/juegos/actualizar/{id}', JuegoController::class . ':actualizarJuego'); // FIXME: POST porque PATCH no quiere evniar los datos | El formulario tiene un campo que cambio el metodo enviado a patch
-// Ruta para obtener un genero
+// Ruta para actualizar un juegos
+$app->patch('/juegos/actualizar/{id}', JuegoController::class . ':actualizarJuego'); 
+// Ruta para buscar un juegos
 $app->get('/juegos/buscar', JuegoController::class . ':buscarJuegos'); // juegos/buscar?nombre=&id_genero=&id_plataforma=&orden=
 
 use App\Controllers\PlataformaController;
 // Ruta para mostrar todos las plataformas
-$app->get('/plataformas/obtener/todos', PlataformaController::class . ':listarPlataformas');
+$app->get('/plataformas/buscar/todos', PlataformaController::class . ':listarPlataformas');
 // Ruta para crear una nueva plataforma
 $app->post('/plataformas/crear', PlataformaController::class . ':crearPlataforma');
 // Ruta para eliminar una plataforma
 $app->delete('/plataformas/eliminar/{id}', PlataformaController::class . ':eliminarPlataforma');
 // Ruta para actualizar una plataforma
-$app->post('/plataformas/actualizar/{id}', PlataformaController::class . ':actualizarPlataforma'); // POST porque PATCH no quiere evniar los datos | El formulario tiene un campo que cambio el metodo enviado a patch
+$app->patch('/plataformas/actualizar/{id}', PlataformaController::class . ':actualizarPlataforma'); 
 
 
 

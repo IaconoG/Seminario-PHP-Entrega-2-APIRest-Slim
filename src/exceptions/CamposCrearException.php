@@ -4,7 +4,7 @@ namespace App\Exceptions;
 
 use Exception;
 
-class CamposVaciosCrearException extends Exception {
+class CamposCrearException extends Exception {
   protected $message = [];
 
   public function __construct($errores) {

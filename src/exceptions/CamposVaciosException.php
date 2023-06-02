@@ -4,16 +4,16 @@ namespace App\Exceptions;
 
 use Exception;
 
-class CamposVaciosActualizarException extends Exception {
+class CamposVaciosException extends Exception {
     protected $message;
 
     public function __construct($tabla) {
         switch ($tabla) {
             case 'juegos':
-                $msg = "Debe completar al menos un campo.";
+                $msg = "Los campos no deben estar vacios debe completar al menos uno.";
                 break;
             default:
-                $msg = "Debe completar el campo.";
+                $msg = "El campo no puede estar vacio debe completarlo.";
                 break;
         }
         $this->message = $msg;

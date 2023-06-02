@@ -7,7 +7,7 @@ use Exception;
 class NoExisteEnTablaException extends Exception {
     protected $message;
 
-    public function __construct($tabla) {
-        $this->message = 'El dato no se encuentra en la tabla ' . $tabla;
+    public function __construct($msg) {
+        $this->message = $msg;
     }
 }

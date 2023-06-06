@@ -185,7 +185,14 @@ class Controller {
       ]));
       return $res
         ->withHeader('Content-Type', 'application/json')
-        ->withStatus(404);
+        ->withStatus(400);
+    } catch (NoExisteEnTablaException $e) {
+        $res->getBody()->write(json_encode([
+          'errror' => $e->getMessage()
+        ]));
+        return $res
+          ->withHeader('Content-Type', 'application/json')
+          ->withStatus(404);
     } catch (\PDOException $e) {
       $res->getBody()->write(json_encode([
         'error PDO' => $e->getMessage()

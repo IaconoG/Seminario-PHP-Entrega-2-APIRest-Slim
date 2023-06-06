@@ -18,7 +18,7 @@ $app->get('/', function (Request $req, Response $res, array $args) {
 
 use App\Controllers\GeneroController;
 // Ruta para mostrar todos los generos
-$app->get('/generos/todos', GeneroController::class . ':listarGeneros');
+$app->get('/generos', GeneroController::class . ':listarGeneros');
 // Ruta para crear un nuevo genero
 $app->post('/generos', GeneroController::class . ':crearGenero');
 // Ruta para eliminar un genero
@@ -27,8 +27,6 @@ $app->delete('/generos/{id}', GeneroController::class . ':eliminarGenero');
 $app->patch('/generos/{id}', GeneroController::class . ':actualizarGenero'); 
 
 use App\Controllers\JuegoController;
-// Ruta para mostrar todos los juegos
-$app->get('/juegos', JuegoController::class . ':listarJuegos');
 // Ruta para crear un nuevo juegos
 $app->post('/juegos', JuegoController::class . ':crearJuego');
 // Ruta para eliminar un juego
@@ -36,7 +34,7 @@ $app->delete('/juegos/{id}', JuegoController::class . ':eliminarJuego');
 // Ruta para actualizar un juegos
 $app->patch('/juegos/{id}', JuegoController::class . ':actualizarJuego'); 
 // Ruta para buscar un juegos
-$app->get('/juegos/buscar', JuegoController::class . ':buscarJuegos'); // juegos/buscar?nombre=&id_genero=&id_plataforma=&orden=
+$app->get('/juegos', JuegoController::class . ':buscarJuegos'); // juegos/buscar?nombre=&id_genero=&id_plataforma=&orden=
 
 use App\Controllers\PlataformaController;
 // Ruta para mostrar todos las plataformas

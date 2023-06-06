@@ -220,12 +220,7 @@ class Controller {
           throw new ErrorEnvioParametrosException('No se proporcionaron parametros en la solicitud');
         }
         if ($this->validarCamposVacios($params)) {
-          throw new CamposVaciosException($tabla);
-        }
-        if (isset($params['buesquedaTodos'])) { // Si se quiere buscar todos los datos
-          if ($params['buesquedaTodos']) {
-            $params = null;
-          }
+          $params = null;
         }
       }
       $datos = $model->buscarDatos($params);
@@ -238,13 +233,6 @@ class Controller {
         ->withHeader('Content-Type', 'application/json')
         ->withStatus(200);
     } catch (ErrorEnvioParametrosException $e) {
-      $res->getBody()->write(json_encode([
-        'error' => $e->getMessage()
-      ]));
-      return $res
-        ->withHeader('Content-Type', 'application/json')
-        ->withStatus(400);
-    } catch (CamposVaciosException $e) {
       $res->getBody()->write(json_encode([
         'error' => $e->getMessage()
       ]));

@@ -7,10 +7,6 @@ use Psr\Http\Message\ServerRequestInterface as Request;
 use App\Models\Juego;
 
 class JuegoController extends Controller{
-  // --- METODO PARA MOSTRAR TODOS LOS JUEGOS ---
-  public function listarJuegos(Request $req, Response $res, $args) {
-    return $this->buscar(new Juego(), 'juegos', ['buesquedaTodos' => true], $res);
-  }
   // --- METODO PARA OBTENER JUEGOS SEGUN PARAMETROS ---
   public function buscarJuegos(Request $req, Response $res, $args) {
     return $this->buscar(new Juego(), 'juegos', $req->getQueryParams(), $res);

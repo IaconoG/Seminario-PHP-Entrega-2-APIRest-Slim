@@ -145,26 +145,34 @@ class Model{
     $sql = "SELECT * FROM $tabla";
 
     if ($datos != null) {
-      $sql .= " WHERE ";
+      $sql .= " WHERE";
 
+      $condiciones = [];
       // Preparar sql
       if (isset($datos['nombre']) && $datos['nombre'] != null) {
-        $sql .= "nombre LIKE :nombre AND ";
+        $condiciones[] = " nombre LIKE :nombre AND";
         $datos['nombre'] = "%".$datos['nombre']."%";
       }
       if (isset($datos['id_genero']) && $datos['id_genero'] != null) {
-        $sql .= "id_genero = :id_genero AND ";
+        $condiciones[] = " id_genero = :id_genero AND";
       }
       if (isset($datos['id_plataforma']) && $datos['id_plataforma'] != null) {
-        $sql .= "id_plataforma = :id_plataforma ";
+        $condiciones[] = " id_plataforma = :id_plataforma";
       }
-      $sql = rtrim($sql, ' AND '); 
-      if (isset($datos['orden']) && $datos['orden'] != null) {
-        $sql .= " ORDER BY juegos.id " . $datos['orden'];
+      if ($condiciones != null) {
+        $sql .= implode(" AND ", $condiciones);
+          // implode -> Une elementos de un array en un string
+        $sql = rtrim($sql, ' AND');
+      } else {
+        $sql = rtrim($sql, ' WHERE'); 
       }
-  
-      $stmt = $conn->prepare($sql);
-
+    }
+    if (isset($datos['orden']) && $datos['orden'] != null) {
+      $sql .= " ORDER BY juegos.id " . $datos['orden'];
+    }
+    
+    $stmt = $conn->prepare($sql);
+    if ($datos != null) {
       // Asignar valores
       if (isset($datos['nombre']) && $datos['nombre'] != null) {
         $stmt->bindValue(':nombre', $datos['nombre']);
@@ -176,7 +184,7 @@ class Model{
         $stmt->bindValue(':id_plataforma', $datos['id_plataforma']);
       }
     }
-
+    
     $stmt->execute();
 
     $resultado = $stmt->fetchALL(\PDO::FETCH_OBJ);

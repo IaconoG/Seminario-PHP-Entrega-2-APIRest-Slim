@@ -146,41 +146,46 @@ class Model{
 
     if ($datos != null) {
       $sql .= " WHERE ";
-      
-      $orden = $datos['orden']; // ASC or DESC
-      unset($datos['orden']);
 
-      foreach ($datos as $key => $value) {
-        if ($value != null) {
-          $sql .= "$key = :$key AND ";
-        }
+      // Preparar sql
+      if (isset($datos['nombre']) && $datos['nombre'] != null) {
+        $sql .= "nombre LIKE :nombre AND ";
+        $datos['nombre'] = "%".$datos['nombre']."%";
+      }
+      if (isset($datos['id_genero']) && $datos['id_genero'] != null) {
+        $sql .= "id_genero = :id_genero AND ";
+      }
+      if (isset($datos['id_plataforma']) && $datos['id_plataforma'] != null) {
+        $sql .= "id_plataforma = :id_plataforma ";
       }
       $sql = rtrim($sql, ' AND '); 
-
-      if ($orden != null) {
-        $sql .= " ORDER BY nombre $orden";
+      if (isset($datos['orden']) && $datos['orden'] != null) {
+        $sql .= " ORDER BY juegos.id " . $datos['orden'];
       }
-    }
+  
+      $stmt = $conn->prepare($sql);
 
-    $stmt = $conn->prepare($sql);
-    
-    if ($datos != null) {
-      foreach ($datos as $key => $value) {
-        if ($value != null) {
-          $stmt->bindValue(":$key", $value);
-        }
+      // Asignar valores
+      if (isset($datos['nombre']) && $datos['nombre'] != null) {
+        $stmt->bindValue(':nombre', $datos['nombre']);
+      }
+      if (isset($datos['id_genero']) && $datos['id_genero'] != null) {
+        $stmt->bindValue(':id_genero', $datos['id_genero']);
+      }
+      if (isset($datos['id_plataforma']) && $datos['id_plataforma'] != null) {
+        $stmt->bindValue(':id_plataforma', $datos['id_plataforma']);
       }
     }
 
     $stmt->execute();
 
-    $datos = $stmt->fetchALL(\PDO::FETCH_OBJ);
+    $resultado = $stmt->fetchALL(\PDO::FETCH_OBJ);
       // fetch() -> devuelve una fila de un conjunto de resultados
       // \PDO::FETCH_OBJ -> le dice a PDO que cree una instancia de la clase stdClass y que asigne los valores de las columnas en la fila a las propiedades con el mismo nombre
 
     $db = null; 
     $stmt = null; 
-    return $datos;
+    return $resultado;
   }
 
   // OTROS METODOS

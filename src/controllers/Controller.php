@@ -94,6 +94,16 @@ class Controller {
         ->withHeader('Content-Type', 'application/json')
         ->withStatus(404);
     } catch (\PDOException $e) { //  Estas excepciones están relacionadas con errores específicos de la base de datos cuando se utiliza PDO
+      if ($e->getCode() === '23000') {
+        // getCode() -> devuelve el código de error de la excepción
+        // 23000 -> error de integridad referencial
+        $res->getBody()->write(json_encode([
+          'error' => 'No se puede eliminar el dato debido a que esta siendo utilizado en otra tabla'
+        ]));
+        return $res
+          ->withHeader('Content-Type', 'application/json')
+          ->withStatus(409);
+      }
       $res->getBody()->write(json_encode([
         'error PDO' => $e->getMessage()
       ]));

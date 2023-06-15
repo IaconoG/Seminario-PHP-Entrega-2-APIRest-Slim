@@ -216,9 +216,6 @@ class Controller {
   protected function buscar($model, $tabla, $params, $res) {
     try {
       if ($tabla == "juegos") {
-        if ($params == null) {
-          throw new ErrorEnvioParametrosException('No se proporcionaron parametros en la solicitud');
-        }
         if ($this->validarCamposVacios($params)) {
           $params = null;
         }
@@ -232,13 +229,6 @@ class Controller {
       return $res
         ->withHeader('Content-Type', 'application/json')
         ->withStatus(200);
-    } catch (ErrorEnvioParametrosException $e) {
-      $res->getBody()->write(json_encode([
-        'error' => $e->getMessage()
-      ]));
-      return $res
-        ->withHeader('Content-Type', 'application/json')
-        ->withStatus(400);
     } catch (\PDOException $e) {
       $res->getBody()->write(json_encode([
         'error' => $e->getMessage()

@@ -150,11 +150,11 @@ class Model{
       $condiciones = [];
       // Preparar sql
       if (isset($datos['nombre']) && $datos['nombre'] != null) {
-        $condiciones[] = " nombre LIKE :nombre AND";
+        $condiciones[] = " nombre LIKE :nombre";
         $datos['nombre'] = "%".$datos['nombre']."%";
       }
       if (isset($datos['id_genero']) && $datos['id_genero'] != null) {
-        $condiciones[] = " id_genero = :id_genero AND";
+        $condiciones[] = " id_genero = :id_genero";
       }
       if (isset($datos['id_plataforma']) && $datos['id_plataforma'] != null) {
         $condiciones[] = " id_plataforma = :id_plataforma";

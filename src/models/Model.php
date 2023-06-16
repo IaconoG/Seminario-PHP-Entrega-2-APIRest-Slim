@@ -168,7 +168,7 @@ class Model{
       }
     }
     if (isset($datos['orden']) && $datos['orden'] != null) {
-      $sql .= " ORDER BY juegos.id " . $datos['orden'];
+      $sql .= " ORDER BY juegos.nombre " . $datos['orden'];
     }
     
     $stmt = $conn->prepare($sql);

@@ -26,7 +26,6 @@ class Controller {
       if (!empty($errores)) {
         throw new CamposCrearException($errores);
       }
-
       // Asignamos los datos al objeto
       /*
         - Asignamos los datos del formulario a las propiedades del objeto
@@ -40,7 +39,6 @@ class Controller {
           $model->$metodos($valor);
         }
       }
-
       $model->crearDato();
       $res->getBody()->write(json_encode([
         'mensaje' => 'Dato creado con exito'
@@ -104,8 +102,9 @@ class Controller {
           ->withHeader('Content-Type', 'application/json')
           ->withStatus(409);
       }
+      
       $res->getBody()->write(json_encode([
-        'error PDO' => $e->getMessage()
+        'error PDO' => $e->getMessage() . ' ' . $e->getCode()
       ]));
       return $res
         ->withHeader('Content-Type', 'application/json')
@@ -308,8 +307,53 @@ class Controller {
     }
     return $allCamposVacios;
   }
-
   private function maxCharImgBD($model) {
     return $model->getMaxCharImgBD();
+  }
+  // Otros metodos
+  protected function cargar($model, $tabla, $res) {
+    try {
+      $rutaJSON = __DIR__ . "/../../src/data/$tabla.json";
+      $datosJSON = json_decode(file_get_contents($rutaJSON), true)[$tabla];
+      $datos = [];
+      foreach ($datosJSON as $dato) {
+        $datos[] = $dato['nombre'];
+      }
+      
+      $yaCargado = $model->cargarDatos($datos, $tabla);
+      $msg = ($yaCargado) ? 'Los datos ya estaban cargados en la tabla '. $tabla : 'Los datos se cargaron correctamente en la tabla '.$tabla;
+      $res->getBody()->write(json_encode([
+        'mensaje' => $msg,
+        'yaCargado' => $yaCargado
+      ]));
+      return $res
+        ->withHeader('Content-Type', 'application/json')
+        ->withStatus(200);
+    } catch (\PDOException $e) {
+      $res->getBody()->write(json_encode([
+        'error' => $e->getMessage()
+      ]));
+      return $res
+        ->withHeader('Content-Type', 'application/json')
+        ->withStatus(500);
+    }
+  }
+  protected function vaciar($model, $tabla, $res) {
+    try {
+      $estabaVacio = $model->vaciarTabla($tabla);
+      $res->getBody()->write(json_encode([
+        'mensaje' => ($estabaVacio) ? "La tabla $tabla ya estaba vacia" : "La tabla $tabla se vacio correctamente"
+      ]));
+      return $res
+        ->withHeader('Content-Type', 'application/json')
+        ->withStatus(200);
+    } catch (\PDOException $e) {
+      $res->getBody()->write(json_encode([
+        'error' => $e->getMessage()
+      ]));
+      return $res
+        ->withHeader('Content-Type', 'application/json')
+        ->withStatus(500);
+    }
   }
 }

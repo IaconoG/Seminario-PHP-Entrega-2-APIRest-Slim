@@ -87,4 +87,10 @@ class Juego extends Model{
   public function existeDato($id) { 
     return $this->existe($id, 'juegos');
   }
+  public function cargarDatos($datos) {
+    return $this->cargar($datos, 'juegos');
+  }
+  public function vaciarTabla() {
+    return $this->vaciar('juegos');
+  }
 }

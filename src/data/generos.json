@@ -1,0 +1,24 @@
+{
+  "generos": [
+    { "id": 1, "nombre": "Aventura" },
+    { "id": 2, "nombre": "Accion" },
+    { "id": 3, "nombre": "RPG" },
+    { "id": 4, "nombre": "Estrategia" },
+    { "id": 5, "nombre": "Deportes" },
+    { "id": 6, "nombre": "Shooter" },
+    { "id": 7, "nombre": "Plataformas" },
+    { "id": 8, "nombre": "Simulacion" },
+    { "id": 9, "nombre": "Puzzle" },
+    { "id": 10, "nombre": "Carreras" },
+    { "id": 11, "nombre": "Lucha" },
+    { "id": 12, "nombre": "Terror" },
+    { "id": 13, "nombre": "Indie" },
+    { "id": 14, "nombre": "MMORPG" },
+    { "id": 15, "nombre": "Casual" },
+    { "id": 16, "nombre": "Arcade" },
+    { "id": 17, "nombre": "Roguelike" },
+    { "id": 18, "nombre": "Mundo abierto" },
+    { "id": 19, "nombre": "Estrategia por turnos" },
+    { "id": 20, "nombre": "Realidad Virtual" }
+  ]
+}

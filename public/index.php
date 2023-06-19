@@ -5,11 +5,18 @@ use Psr\Http\Message\ServerRequestInterface as Request;
 use Slim\Factory\AppFactory;
 
 
+require_once '../src/config/config.php';
 require __DIR__ . '/../vendor/autoload.php';
 
+use Slim\Middleware\MethodOverrideMiddleware;
+use Slim\Routing\RouteCollectorProxy;
+
+
 $app = AppFactory::create();
+header("Access-Control-Allow-Origin: *");
+header("Access-Control-Allow-Methods: GET, POST, PUT, DELETE, OPTIONS");
 $app->addErrorMiddleware(true, true, true);
-$app->setBasePath("/public");
+$app->setBasePath("/public"); // No pude hacer que no sea necesario poner /public en la url :(
 
 $app->get('/', function (Request $req, Response $res, array $args) {
     $res->getBody()->write('index');
@@ -46,6 +53,10 @@ $app->delete('/plataformas/{id}', PlataformaController::class . ':eliminarPlataf
 // Ruta para actualizar una plataforma
 $app->patch('/plataformas/{id}', PlataformaController::class . ':actualizarPlataforma'); 
 
+// Ruta para cargar los datos en la base de datos
+$app->post('/generos/todos', GeneroController::class . ':cargarDatos');
+$app->post('/plataformas/todos', PlataformaController::class . ':cargarDatos');
+// $app->post('/juegos/todos', JuegoController::class . ':cargarDatos');
 
 
 $app->run();     

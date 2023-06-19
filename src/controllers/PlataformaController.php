@@ -17,10 +17,16 @@ class PlataformaController extends Controller{
   }
   // --- METODO PARA ELIMINAR UNA PLATAFORMA ---
   public function eliminarPlataforma(Request $req, Response $res, $args) {
+    if ($args['id'] == 'todos')
+      return $this->vaciar(new Plataforma(), 'plataformas', $res);
     return $this->elimnar(new Plataforma(), 'plataformas', $args['id'], $res);
   }
   // --- METODO PARA ACTUALIZAR UNA PLATAFORMA ---
   public function actualizarPlataforma(Request $req, Response $res, $args) {
     return $this->actualizar(new Plataforma(), 'plataformas', $args['id'], $req, $res);
+  }
+  // Otros metodos
+  public function cargarDatos(Request $req, Response $res, $args) {
+    return $this->cargar(new Plataforma(), 'plataformas', $res);
   }
 }

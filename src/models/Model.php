@@ -136,7 +136,7 @@ class Model{
     $db = null;
     $stmt = null;
 
-    return ($numFilasEliminadas > 0) ? true : false;
+    return ($numFilasEliminadas > 0);
   }
   protected function buscar($datos, $tabla) {
     $db = new DB();
@@ -211,4 +211,61 @@ class Model{
     $stmt = null; 
     return $maxChar;
   }  
+  protected function cargar($datos, $tabla) {
+    $db = new DB();
+    $coon = $db->getConnection();
+
+    // === Obtenemos los datos de la bd ===
+    $sql = "SELECT nombre FROM $tabla";
+    $stmt = $coon->prepare($sql);
+    $stmt->execute();
+
+    $datosExistentes = $stmt->fetchALL(\PDO::FETCH_COLUMN);
+
+    $datosUnicos = array_filter($datos, function ($elem) use ($datosExistentes) {
+      return !in_array($elem, $datosExistentes);
+    }); 
+      // array_filter -> Filtra elementos de un array usando una función de devolución de llamada
+      // in_array -> Comprueba si un valor existe en un array
+    
+    if (empty($datosUnicos)) { return true; }
+
+    // === Insertamos los datos que falten ===
+    $sql = "INSERT INTO $tabla (nombre) VALUES ";
+    
+    $parametros = [];
+    foreach ($datosUnicos as $idx => $dato) {
+      $param = ':nombre_' . $idx;
+      $sql .= "($param), ";
+      $parametros[$param] = $dato;
+    }
+    $sql = rtrim($sql, ', ');
+    $sql .= ";";
+
+    $stmt = $coon->prepare($sql);
+
+    foreach ($parametros as $param => $value) {
+      $stmt->bindValue($param, $value);
+    }
+
+    $stmt->execute();
+
+    $db = null;
+    $stmt = null;
+    return false;
+  }
+  protected function vaciar($tabla) {
+    $db = new DB();
+    $conn = $db->getConnection();
+
+    $sql = "DELETE FROM $tabla";
+    $stmt = $conn->prepare($sql);
+    $stmt->execute();
+
+    $numFilasEliminadas = $stmt->rowCount();
+
+    $db = null;
+    $stmt = null;
+    return ($numFilasEliminadas === 0);
+  }
 }

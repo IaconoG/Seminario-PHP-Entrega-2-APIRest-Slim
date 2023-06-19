@@ -41,5 +41,11 @@ class Plataforma extends Model{
   public function existeDato($id) { 
     return $this->existe($id, 'plataformas');
   }
+  public function cargarDatos($datos) {
+    return $this->cargar($datos, 'plataformas');
+  }
+  public function vaciarTabla() {
+    return $this->vaciar('plataformas');
+  }
   
 }

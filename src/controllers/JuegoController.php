@@ -17,10 +17,16 @@ class JuegoController extends Controller{
   }
   // --- METODO PARA ELIMINAR UN JUEGO ---
   public function eliminarJuego(Request $req, Response $res, $args) {
+    if ($args['id'] == 'todos')
+      return $this->vaciar(new Juego(), 'juegos', $res);
     return $this->elimnar(new Juego(), 'juegos', $args['id'], $res);
   }
   // --- METODO PARA ACTUALIZAR UN JUEGO ---
   public function actualizarJuego(Request $req, Response $res, $args) {
     return $this->actualizar(new Juego(), 'juegos', $args['id'], $req, $res);
+  }
+  // Otros metodos
+  public function cargarDatos(Request $req, Response $res, $args) {
+    return $this->cargar(new Juego(), 'juegos', $res);
   }
 }

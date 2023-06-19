@@ -1,3 +1,5 @@
+php -S localhost:8000
+
 200 ok
 400 bad request: faltan datos
 404 not found: no existe la ruta

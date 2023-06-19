@@ -17,10 +17,16 @@ class GeneroController extends Controller{
   }
   // --- METODO PARA ELIMINAR UN GENEROS ---
   public function eliminarGenero(Request $req, Response $res, $args) {
+    if ($args['id'] == 'todos')
+      return $this->vaciar(new Genero(), 'generos', $res);
     return $this->elimnar(new Genero(), 'generos', $args['id'], $res);
   }
   // --- METODO PARA ACTUALIZAR UN GENEROS ---
   public function actualizarGenero(Request $req, Response $res, $args) {
     return $this->actualizar(new Genero(), 'generos', $args['id'],  $req, $res);
+  }
+  // Otros metodos
+  public function cargarDatos(Request $req, Response $res, $args) {
+    return $this->cargar(new Genero(), 'generos', $res);
   }
 }

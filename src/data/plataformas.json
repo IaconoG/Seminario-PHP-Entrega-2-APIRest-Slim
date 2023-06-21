@@ -1,25 +1,23 @@
-{
-  "plataformas": [
-    { "id": 1, "nombre": "PlayStation 5" },
-    { "id": 2, "nombre": "Xbox Series X" },
-    { "id": 3, "nombre": "Nintendo Switch" },
-    { "id": 4, "nombre": "PC" },
-    { "id": 5, "nombre": "PlayStation 4" },
-    { "id": 6, "nombre": "Xbox One" },
-    { "id": 7, "nombre": "Nintendo 3DS" },
-    { "id": 8, "nombre": "PlayStation 3" },
-    { "id": 9, "nombre": "Xbox 360" },
-    { "id": 10, "nombre": "Wii U" },
-    { "id": 11, "nombre": "PlayStation Vita" },
-    { "id": 12, "nombre": "Nintendo DS" },
-    { "id": 13, "nombre": "Wii" },
-    { "id": 14, "nombre": "PlayStation 2" },
-    { "id": 15, "nombre": "Xbox" },
-    { "id": 16, "nombre": "Nintendo 64" },
-    { "id": 17, "nombre": "PlayStation" },
-    { "id": 18, "nombre": "Super Nintendo" },
-    { "id": 19, "nombre": "Sega Genesis" },
-    { "id": 20, "nombre": "NES" },
-    { "id": 21, "nombre": "Atari 2600" }
-  ]
-}
+[
+  { "nombre": "PlayStation 5" },
+  { "nombre": "Xbox Series X" },
+  { "nombre": "Nintendo Switch" },
+  { "nombre": "PC" },
+  { "nombre": "PlayStation 4" },
+  { "nombre": "Xbox One" },
+  { "nombre": "Nintendo 3DS" },
+  { "nombre": "PlayStation 3" },
+  { "nombre": "Xbox 360" },
+  { "nombre": "Wii U" },
+  { "nombre": "PlayStation Vita" },
+  { "nombre": "Nintendo DS" },
+  { "nombre": "Wii" },
+  { "nombre": "PlayStation 2" },
+  { "nombre": "Xbox" },
+  { "nombre": "Nintendo 64" },
+  { "nombre": "PlayStation" },
+  { "nombre": "Super Nintendo" },
+  { "nombre": "Sega Genesis" },
+  { "nombre": "NES" },
+  { "nombre": "Atari 2600" }
+]

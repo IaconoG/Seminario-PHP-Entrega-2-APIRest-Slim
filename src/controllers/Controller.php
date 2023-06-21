@@ -314,13 +314,15 @@ class Controller {
   protected function cargar($model, $tabla, $res) {
     try {
       $rutaJSON = __DIR__ . "/../../src/data/$tabla.json";
-      $datosJSON = json_decode(file_get_contents($rutaJSON), true)[$tabla];
-      $datos = [];
-      foreach ($datosJSON as $dato) {
-        $datos[] = $dato['nombre'];
-      }
+      $datos = json_decode(file_get_contents($rutaJSON), true);
       
-      $yaCargado = $model->cargarDatos($datos, $tabla);
+      $nombres = [];
+      foreach ($datos as $nombre) {
+        $nombres[] = $nombre['nombre'];
+      }
+
+      $yaCargado = $model->cargarDatos($datos, $nombres);
+
       $msg = ($yaCargado) ? 'Los datos ya estaban cargados en la tabla '. $tabla : 'Los datos se cargaron correctamente en la tabla '.$tabla;
       $res->getBody()->write(json_encode([
         'mensaje' => $msg,

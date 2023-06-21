@@ -41,8 +41,8 @@ class Genero extends Model{
   public function existeDato($id) { 
     return $this->existe($id, 'generos');
   }
-  public function cargarDatos($datos) {
-    return $this->cargar($datos, 'generos');
+  public function cargarDatos($datos, $nombres) {
+    return $this->cargar($datos, $nombres, 'generos');
   }
   public function vaciarTabla() {
     return $this->vaciar('generos');

@@ -1,0 +1,182 @@
+[
+  {
+    "nombre": "Juego 1",
+    "imagen": "",
+    "tipo_imagen": "image/png",
+    "descripcion": "Lorem ipsum dolor sit amet, consectetur adipiscing elit.",
+    "url": "www.nombreJuego1.com",
+    "id_genero": 15,
+    "id_plataforma": 1
+  },
+  {
+    "nombre": "Juego 2",
+    "imagen": "",
+    "tipo_imagen": "image/bmp",
+    "descripcion": "Lorem ipsum dolor sit amet, consectetur adipiscing elit.",
+    "url": "www.nombreJuego2.com",
+    "id_genero": 17,
+    "id_plataforma": 1
+  },
+  {
+    "nombre": "Juego 3",
+    "imagen": "",
+    "tipo_imagen": "image/webp",
+    "descripcion": "Lorem ipsum dolor sit amet, consectetur adipiscing elit.",
+    "url": "www.nombreJuego3.com",
+    "id_genero": 13,
+    "id_plataforma": 5
+  },
+  {
+    "nombre": "Juego 4",
+    "imagen": "",
+    "tipo_imagen": "image/png",
+    "descripcion": "Lorem ipsum dolor sit amet, consectetur adipiscing elit.",
+    "url": "www.nombreJuego4.com",
+    "id_genero": 8,
+    "id_plataforma": 4
+  },
+  {
+    "nombre": "Juego 5",
+    "imagen": "",
+    "tipo_imagen": "image/jpeg",
+    "descripcion": "Lorem ipsum dolor sit amet, consectetur adipiscing elit.",
+    "url": "www.nombreJuego5.com",
+    "id_genero": 1,
+    "id_plataforma": 20
+  },
+  {
+    "nombre": "Juego 6",
+    "imagen": "",
+    "tipo_imagen": "image/svg+xml",
+    "descripcion": "Lorem ipsum dolor sit amet, consectetur adipiscing elit.",
+    "url": "www.nombreJuego6.com",
+    "id_genero": 8,
+    "id_plataforma": 1
+  },
+  {
+    "nombre": "Juego 7",
+    "imagen": "",
+    "tipo_imagen": "image/gif",
+    "descripcion": "Lorem ipsum dolor sit amet, consectetur adipiscing elit.",
+    "url": "www.nombreJuego7.com",
+    "id_genero": 5,
+    "id_plataforma": 4
+  },
+  {
+    "nombre": "Juego 8",
+    "imagen": "",
+    "tipo_imagen": "image/png",
+    "descripcion": "Lorem ipsum dolor sit amet, consectetur adipiscing elit.",
+    "url": "www.nombreJuego8.com",
+    "id_genero": 11,
+    "id_plataforma": 13
+  },
+  {
+    "nombre": "Juego 9",
+    "imagen": "",
+    "tipo_imagen": "image/jpeg",
+    "descripcion": "Lorem ipsum dolor sit amet, consectetur adipiscing elit.",
+    "url": "www.nombreJuego9.com",
+    "id_genero": 16,
+    "id_plataforma": 9
+  },
+  {
+    "nombre": "Juego 10",
+    "imagen": "",
+    "tipo_imagen": "image/svg+xml",
+    "descripcion": "Lorem ipsum dolor sit amet, consectetur adipiscing elit.",
+    "url": "www.nombreJuego10.com",
+    "id_genero": 16,
+    "id_plataforma": 19
+  },
+  {
+    "nombre": "Juego 11",
+    "imagen": "",
+    "tipo_imagen": "image/jpeg",
+    "descripcion": "Lorem ipsum dolor sit amet, consectetur adipiscing elit.",
+    "url": "www.nombreJuego11.com",
+    "id_genero": 1,
+    "id_plataforma": 10
+  },
+  {
+    "nombre": "Juego 12",
+    "imagen": "",
+    "tipo_imagen": "image/png",
+    "descripcion": "Lorem ipsum dolor sit amet, consectetur adipiscing elit.",
+    "url": "www.nombreJuego12.com",
+    "id_genero": 7,
+    "id_plataforma": 10
+  },
+  {
+    "nombre": "Juego 13",
+    "imagen": "",
+    "tipo_imagen": "image/gif",
+    "descripcion": "Lorem ipsum dolor sit amet, consectetur adipiscing elit.",
+    "url": "www.nombreJuego13.com",
+    "id_genero": 18,
+    "id_plataforma": 18
+  },
+  {
+    "nombre": "Juego 14",
+    "imagen": "",
+    "tipo_imagen": "image/png",
+    "descripcion": "Lorem ipsum dolor sit amet, consectetur adipiscing elit.",
+    "url": "www.nombreJuego14.com",
+    "id_genero": 9,
+    "id_plataforma": 2
+  },
+  {
+    "nombre": "Juego 15",
+    "imagen": "",
+    "tipo_imagen": "image/webp",
+    "descripcion": "Lorem ipsum dolor sit amet, consectetur adipiscing elit.",
+    "url": "www.nombreJuego15.com",
+    "id_genero": 9,
+    "id_plataforma": 12
+  },
+  {
+    "nombre": "Juego 16",
+    "imagen": "",
+    "tipo_imagen": "image/jpeg",
+    "descripcion": "Lorem ipsum dolor sit amet, consectetur adipiscing elit.",
+    "url": "www.nombreJuego16.com",
+    "id_genero": 1,
+    "id_plataforma": 7
+  },
+  {
+    "nombre": "Juego 17",
+    "imagen": "",
+    "tipo_imagen": "image/png",
+    "descripcion": "Lorem ipsum dolor sit amet, consectetur adipiscing elit.",
+    "url": "www.nombreJuego17.com",
+    "id_genero": 17,
+    "id_plataforma": 19
+  },
+  {
+    "nombre": "Juego 18",
+    "imagen": "",
+    "tipo_imagen": "image/gif",
+    "descripcion": "Lorem ipsum dolor sit amet, consectetur adipiscing elit.",
+    "url": "www.nombreJuego18.com",
+    "id_genero": 9,
+    "id_plataforma": 13
+  },
+  {
+    "nombre": "Juego 19",
+    "imagen": "",
+    "tipo_imagen": "image/png",
+    "descripcion": "Lorem ipsum dolor sit amet, consectetur adipiscing elit.",
+    "url": "www.nombreJuego19.com",
+    "id_genero": 16,
+    "id_plataforma": 19
+  },
+  {
+    "nombre": "Juego 20",
+    "imagen": "",
+    "tipo_imagen": "image/gif",
+    "descripcion": "Lorem ipsum dolor sit amet, consectetur adipiscing elit.",
+    "url": "www.nombreJuego20.com",
+    "id_genero": 11,
+    "id_plataforma": 20
+  }
+]

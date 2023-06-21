@@ -211,7 +211,7 @@ class Model{
     $stmt = null; 
     return $maxChar;
   }  
-  protected function cargar($datos, $tabla) {
+  protected function cargar($datos, $nombres, $tabla) {
     $db = new DB();
     $coon = $db->getConnection();
 
@@ -222,32 +222,48 @@ class Model{
 
     $datosExistentes = $stmt->fetchALL(\PDO::FETCH_COLUMN);
 
-    $datosUnicos = array_filter($datos, function ($elem) use ($datosExistentes) {
-      return !in_array($elem, $datosExistentes);
-    }); 
-      // array_filter -> Filtra elementos de un array usando una función de devolución de llamada
-      // in_array -> Comprueba si un valor existe en un array
+    // === Filtramos los datos que ya existen ===
+    $datosUnicos = [];
+    foreach ($datos as $dato) {
+      if (!in_array($dato['nombre'], $datosExistentes)) {
+          // in_array -> Comprueba si un valor existe en un array
+        $datosUnicos[] = $dato;
+      }
+    }
     
     if (empty($datosUnicos)) { return true; }
-
-    // === Insertamos los datos que falten ===
-    $sql = "INSERT INTO $tabla (nombre) VALUES ";
     
-    $parametros = [];
-    foreach ($datosUnicos as $idx => $dato) {
-      $param = ':nombre_' . $idx;
-      $sql .= "($param), ";
-      $parametros[$param] = $dato;
+    // === Insertamos los datos que falten ===
+    $sql = "INSERT INTO $tabla (";
+  
+    // Asignamos los parametros de la consulta
+    $columnas = array_keys($datosUnicos[0]);
+    $sql .= implode(", ", $columnas);  
+    $sql .= ") VALUES ";
+    
+    foreach ($datosUnicos as $idx => $dato) { // Recorremos los datos
+      $sql .= "(";
+      foreach ($columnas as  $value) { // Recorremos los parametros de del dato
+        $sql .= ":{$value}{$idx}, ";
+      }
+      $sql = rtrim($sql, ', ');
+      $sql .= "), ";  
     }
     $sql = rtrim($sql, ', ');
+      // rtrim -> Elimina los espacios en blanco (u otro tipo de caracteres) del final de un string
     $sql .= ";";
 
+    // === Preparamos la consulta ===
     $stmt = $coon->prepare($sql);
 
-    foreach ($parametros as $param => $value) {
-      $stmt->bindValue($param, $value);
-    }
-
+    // Asignamos los valores
+    $asd = [];
+    foreach ($datosUnicos as $idx => $dato) {
+      foreach ($dato as $key => $value) {
+        $asd[] = ":{$key}{$idx}', $value";
+        $stmt->bindValue(":{$key}{$idx}", $value);
+      }
+    }    
     $stmt->execute();
 
     $db = null;

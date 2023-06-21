@@ -56,7 +56,7 @@ $app->patch('/plataformas/{id}', PlataformaController::class . ':actualizarPlata
 // Ruta para cargar los datos en la base de datos
 $app->post('/generos/todos', GeneroController::class . ':cargarDatos');
 $app->post('/plataformas/todos', PlataformaController::class . ':cargarDatos');
-// $app->post('/juegos/todos', JuegoController::class . ':cargarDatos');
+$app->post('/juegos/todos', JuegoController::class . ':cargarDatos');
 
 
 $app->run();     

@@ -114,6 +114,7 @@ class Controller {
   protected function actualizar($model, $tabla, $id, $datos, $res) {
     try {
       $datos = json_decode($datos->getBody()->getContents(), true);
+      unset($datos['id']);
       if (($datos == null)) {
         throw new ErrorEnvioParametrosException('No se proporcionaron parametros en la solicitud');
       }
@@ -169,7 +170,7 @@ class Controller {
       }
       
       $res->getBody()->write(json_encode([
-        'mensaje' => 'El dato fue actualizado con exito',
+        'mensaje' => 'El dato fue actualizado con exito'
       ]));
       return $res
         ->withHeader('Content-Type', 'application/json')
@@ -325,8 +326,7 @@ class Controller {
 
       $msg = ($yaCargado) ? 'Los datos ya estaban cargados en la tabla '. $tabla : 'Los datos se cargaron correctamente en la tabla '.$tabla;
       $res->getBody()->write(json_encode([
-        'mensaje' => $msg,
-        'yaCargado' => $yaCargado
+        'mensaje' => $msg
       ]));
       return $res
         ->withHeader('Content-Type', 'application/json')

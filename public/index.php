@@ -13,8 +13,9 @@ use Slim\Routing\RouteCollectorProxy;
 
 
 $app = AppFactory::create();
-header("Access-Control-Allow-Origin: *");
-header("Access-Control-Allow-Methods: GET, POST, PUT, DELETE, OPTIONS");
+Header("Access-Control-Allow-Origin: *");
+Header("Access-Control-Allow-Methods: GET, POST, PUT, DELETE, PATCH, OPTIONS");
+Header("Access-Control-Allow-Headers: Content-Type");
 $app->addErrorMiddleware(true, true, true);
 $app->setBasePath("/public"); // No pude hacer que no sea necesario poner /public en la url :(
 

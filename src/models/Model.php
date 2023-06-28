@@ -64,6 +64,17 @@ class Model{
     $db = new DB();
     $conn = $db->getConnection();
 
+    $sql = "SELECT * FROM $tabla WHERE $tabla.id = :id";
+    $stmt = $conn->prepare($sql);
+    $stmt->bindValue(':id', $id);
+    $stmt->execute();
+
+    if (!$stmt->fetch(PDO::FETCH_ASSOC)) {
+      $db = null;
+      $stmt = null;
+      return -1;
+    }
+
     $sql = "UPDATE $tabla SET ";
     $parametros = [];
 
@@ -117,7 +128,7 @@ class Model{
 
     $db = null;
     $stmt = null;
-    return ($numFilasActualizadas > 0) ? true : false;
+    return $numFilasActualizadas;
   }
   protected function elimnar($id, $tabla) {
     $db = new DB();
@@ -279,6 +290,12 @@ class Model{
     $stmt->execute();
 
     $numFilasEliminadas = $stmt->rowCount();
+
+    // === Reseteamos el autoincremental ===
+    $sql = "ALTER TABLE $tabla AUTO_INCREMENT = 1";
+    $stmt = $conn->prepare($sql);
+    $stmt->execute();
+
 
     $db = null;
     $stmt = null;

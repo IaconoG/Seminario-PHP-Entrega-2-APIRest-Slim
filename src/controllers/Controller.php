@@ -8,6 +8,7 @@ use App\Exceptions\NoExisteEnTablaException;
 use App\Exceptions\CamposVaciosException;
 use App\Exceptions\CamposCrearException;
 use App\Exceptions\ErrorEnvioParametrosException;
+use App\Exceptions\NoSeModificaronDatosException;
 
 class Controller {
   protected function crear($model, $tabla, $datos, $res) {
@@ -165,12 +166,18 @@ class Controller {
   
       // Actualizamos el dato
       $fueActualizado = $model->actualizarDato($id); 
-      if (!$fueActualizado) { 
-        throw new NoExisteEnTablaException('No se pudo actualizar el dato debido a que no existe en la tabla'); 
-      }
+      if ($fueActualizado === -1) throw new NoExisteEnTablaException('No se pudo actualizar el dato debido a que no existe.');
+      if ($fueActualizado === 0) throw new NoSeModificaronDatosException('No se actualizo el dato debido a que no se hubo una modificacion.');
       
       $res->getBody()->write(json_encode([
         'mensaje' => 'El dato fue actualizado con exito'
+      ]));
+      return $res
+        ->withHeader('Content-Type', 'application/json')
+        ->withStatus(200);
+    } catch (NoSeModificaronDatosException $e) {
+      $res->getBody()->write(json_encode([
+        'mensaje' => $e->getMessage()
       ]));
       return $res
         ->withHeader('Content-Type', 'application/json')
@@ -198,7 +205,7 @@ class Controller {
         ->withStatus(400);
     } catch (NoExisteEnTablaException $e) {
         $res->getBody()->write(json_encode([
-          'errror' => $e->getMessage()
+          'error' => $e->getMessage()
         ]));
         return $res
           ->withHeader('Content-Type', 'application/json')
@@ -324,7 +331,7 @@ class Controller {
 
       $yaCargado = $model->cargarDatos($datos, $nombres);
 
-      $msg = ($yaCargado) ? 'Los datos ya estaban cargados en la tabla '. $tabla : 'Los datos se cargaron correctamente en la tabla '.$tabla;
+      $msg = ($yaCargado) ? 'Los datos ya estaban cargados en la tabla '. $tabla.'.' : 'Los datos se cargaron correctamente en la tabla '.$tabla.'.';
       $res->getBody()->write(json_encode([
         'mensaje' => $msg
       ]));
@@ -333,7 +340,7 @@ class Controller {
         ->withStatus(200);
     } catch (\PDOException $e) {
       $res->getBody()->write(json_encode([
-        'error' => $e->getMessage()
+        'error PDO' => $e->getMessage()
       ]));
       return $res
         ->withHeader('Content-Type', 'application/json')
@@ -344,7 +351,7 @@ class Controller {
     try {
       $estabaVacio = $model->vaciarTabla($tabla);
       $res->getBody()->write(json_encode([
-        'mensaje' => ($estabaVacio) ? "La tabla $tabla ya estaba vacia" : "La tabla $tabla se vacio correctamente"
+        'mensaje' => ($estabaVacio) ? "La tabla $tabla ya estaba vacia." : "La tabla $tabla se vacio correctamente."
       ]));
       return $res
         ->withHeader('Content-Type', 'application/json')

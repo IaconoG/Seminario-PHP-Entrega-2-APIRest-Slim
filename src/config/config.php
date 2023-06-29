@@ -8,4 +8,3 @@ error_reporting(E_ALL & ~E_WARNING & ~E_NOTICE);
   // ~E_WARNING -> todos los errores excepto E_WARNING
   // ~E_NOTICE -> todos los errores excepto E_NOTICE
   // Esto para evitar que se modifique el mensjae devuleto de error
-  

@@ -17,6 +17,13 @@ Header("Access-Control-Allow-Origin: *");
 Header("Access-Control-Allow-Methods: GET, POST, PUT, DELETE, PATCH, OPTIONS");
 Header("Access-Control-Allow-Headers: Content-Type");
 $app->addErrorMiddleware(true, true, true);
+/* Add Error Middleware
+ *
+ * @param bool                  $displayErrorDetails -> Should be set to false in production
+ * @param bool                  $logErrors -> Parameter is passed to the default ErrorHandler
+ * @param bool                  $logErrorDetails -> Display error details in error log
+https://www.slimframework.com/docs/v4/middleware/error-handling.html
+*/
 $app->setBasePath("/public"); // No pude hacer que no sea necesario poner /public en la url :(
 
 $app->get('/', function (Request $req, Response $res, array $args) {

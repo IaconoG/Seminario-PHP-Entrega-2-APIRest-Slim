@@ -5,7 +5,6 @@ use Psr\Http\Message\ServerRequestInterface as Request;
 use Slim\Factory\AppFactory;
 
 
-require_once '../src/config/config.php';
 require __DIR__ . '/../vendor/autoload.php';
 
 use Slim\Middleware\MethodOverrideMiddleware;

@@ -105,7 +105,7 @@ class Controller {
       }
       
       $res->getBody()->write(json_encode([
-        'error PDO' => $e->getMessage() . ' ' . $e->getCode()
+        'error' => $e->getMessage() . ' ' . $e->getCode()
       ]));
       return $res
         ->withHeader('Content-Type', 'application/json')
@@ -181,7 +181,7 @@ class Controller {
       ]));
       return $res
         ->withHeader('Content-Type', 'application/json')
-        ->withStatus(200);
+        ->withStatus(200); // 304 -> Not Modified, no se modifico el dato
     } catch (ErrorEnvioParametrosException $e){
       $res->getBody()->write(json_encode([
         'error' => $e->getMessage()
@@ -202,17 +202,17 @@ class Controller {
       ]));
       return $res
         ->withHeader('Content-Type', 'application/json')
-        ->withStatus(400);
+        ->withStatus(422); // 422 -> Unprocessable Entity, esta bien pero datos invalidos
     } catch (NoExisteEnTablaException $e) {
         $res->getBody()->write(json_encode([
           'error' => $e->getMessage()
         ]));
         return $res
           ->withHeader('Content-Type', 'application/json')
-          ->withStatus(404);
+          ->withStatus(404); // 404 -> Not Found, no se encontro el dato
     } catch (\PDOException $e) {
       $res->getBody()->write(json_encode([
-        'error PDO' => $e->getMessage()
+        'error' => $e->getMessage()
       ]));
       return $res
         ->withHeader('Content-Type', 'application/json')
@@ -340,7 +340,7 @@ class Controller {
         ->withStatus(200);
     } catch (\PDOException $e) {
       $res->getBody()->write(json_encode([
-        'error PDO' => $e->getMessage()
+        'error' => $e->getMessage()
       ]));
       return $res
         ->withHeader('Content-Type', 'application/json')

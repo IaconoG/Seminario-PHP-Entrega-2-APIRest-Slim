@@ -222,11 +222,6 @@ class Controller {
   // ---
   protected function buscar($model, $tabla, $params, $res) {
     try {
-      if ($tabla == "juegos") {
-        if ($this->validarCamposVacios($params)) {
-          $params = null;
-        }
-      }
       $datos = $model->buscarDatos($params);
 
       $res->getBody()->write(json_encode([
